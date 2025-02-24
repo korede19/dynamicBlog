@@ -1,0 +1,40 @@
+.pgContain {
+  background-color: #eae2d3;
+  padding: 10px 0px;
+}
+
+.barContain {
+  max-width: 1400px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.medias {
+  display: flex;
+  gap: 20px;
+  cursor: pointer;
+}
+
+.searchForm {
+  background-color: #3a4a3f;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-radius: 4px;
+  padding: 5px 10px;
+  color: #fff;
+}
+
+.searchForm input {
+  background-color: transparent;
+  color: #fff;
+  font-family: var(--font-lato);
+  outline: none;
+  border: 0px;
+}
+
+.searchForm input::placeholder {
+  color: #fff;
+}
