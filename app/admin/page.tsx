@@ -40,7 +40,6 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
 
   return (
     <div className={styles.btnContain}>
-      {/* Text Formatting Section */}
       <div className={styles.toolSection}>
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -62,7 +61,6 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         </button>
       </div>
 
-      {/* Headings Section */}
       <div className={styles.toolSection}>
         <button
           onClick={() =>
