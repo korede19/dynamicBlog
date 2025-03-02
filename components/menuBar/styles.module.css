@@ -1,0 +1,31 @@
+.btnContain {
+  display: flex;
+  gap: 20pxx;
+}
+
+.allContain {
+  width: unset;
+}
+
+.button {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 0px;
+  background-color: #f6f2f1;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #3a4a3f;
+  color: #fff;
+}
+
+.clearFormat {
+  font-family: var(--font-encode-sans);
+  padding: 20px;
+}
+
+.active {
+  background-color: #2a2725;
+  color: #fff;
+}

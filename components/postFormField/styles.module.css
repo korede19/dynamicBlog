@@ -1,0 +1,73 @@
+.formLabel {
+    font-size: 25px;
+    color: #2a2725;
+    font-weight: 700;
+  }
+  
+  .titleForm {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+  }
+  
+  .mainForm {
+    border: 2px solid #3a4a3f;
+    padding: 15px;
+    border-radius: 10px;
+    outline: 0px;
+    font-size: 30px;
+    font-family: var(--font-encode-sans);
+    font-weight: 700;
+  }
+  
+  .tabPgTwo {
+    /* gap: 10px; */
+    padding: 30px 0px 0px 0px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .selectForm {
+    border: 2px solid #3a4a3f;
+    padding: 10px;
+    margin: 10px 0px 0px 0px;
+    font-family: var(--font-encode-sans);
+    outline: none;
+    font-size: 18px;
+    border-radius: 10px;
+    background-color: #2a2725;
+    color: #fff;
+  }
+  
+  .tabPgThree {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 0px 0px 0px;
+    gap: 10px;
+  }
+  
+  .editorContent {
+    margin: 20px 0px 0px 0px;
+  }
+  
+  .tabPgFour {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 0px 0px 0px;
+    gap: 10px;
+  }
+  .tagsContainer {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    padding: 20px 0px 0px 0px;
+  }
+  
+  .tagsInput {
+    padding: 15px;
+    border: 2px solid #2a2725;
+    font-family: var(--font-encode-sans);
+    font-size: 16px;
+    outline: none;
+    border-radius: 10px;
+  }

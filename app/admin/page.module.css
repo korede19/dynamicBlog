@@ -19,70 +19,6 @@
   padding-bottom: 60px;
 }
 
-.formLabel {
-  font-size: 25px;
-  color: #2a2725;
-  font-weight: 700;
-}
-
-.titleForm {
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-}
-
-.mainForm {
-  border: 2px solid #3a4a3f;
-  padding: 15px;
-  border-radius: 10px;
-  outline: 0px;
-  font-size: 30px;
-  font-family: var(--font-encode-sans);
-  font-weight: 700;
-}
-
-.tabPgTwo {
-  /* gap: 10px; */
-  padding: 30px 0px 0px 0px;
-  display: flex;
-  flex-direction: column;
-}
-
-.selectForm {
-  border: 2px solid #3a4a3f;
-  padding: 10px;
-  margin: 10px 0px 0px 0px;
-  font-family: var(--font-encode-sans);
-  outline: none;
-  font-size: 18px;
-  border-radius: 10px;
-  background-color: #2a2725;
-  color: #fff;
-}
-
-.tabPgThree {
-  display: flex;
-  flex-direction: column;
-  padding: 30px 0px 0px 0px;
-  gap: 10px;
-}
-
-.editorContent {
-  margin: 20px 0px 0px 0px;
-}
-
-.tabPgFour {
-  display: flex;
-  flex-direction: column;
-  padding: 30px 0px 0px 0px;
-  gap: 10px;
-}
-
-.uploadBtn {
-  font-size: 18px;
-  font-family: var(--font-encode-sans);
-}
-
 .submitBtn {
   background-color: #2a2725;
   padding: 15px 60px;
@@ -92,50 +28,6 @@
   border-radius: 10px;
   cursor: pointer;
   font-family: var(--font-encode-sans);
-}
-
-.button {
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-  border: 0px;
-  background-color: #f6f2f1;
-  cursor: pointer;
-}
-
-.button:hover {
-  background-color: #3a4a3f;
-  color: #fff;
-}
-
-.clearFormat {
-  font-family: var(--font-encode-sans);
-  padding: 20px;
-}
-
-.active {
-  background-color: #2a2725;
-  color: #fff;
-}
-
-.icon {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.tagsContainer {
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-  padding: 20px 0px 0px 0px;
-}
-
-.tagsInput {
-  padding: 15px;
-  border: 2px solid #2a2725;
-  font-family: var(--font-encode-sans);
-  font-size: 16px;
-  outline: none;
-  border-radius: 10px;
 }
 
 .formFooter {
@@ -155,13 +47,3 @@
   font-family: var(--font-encode-sans);
 }
 
-.previewBtn {
-  background-color: #ae8f60;
-  padding: 15px 60px;
-  color: #ffffff;
-  font-size: 18px;
-  border: 0px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-family: var(--font-encode-sans);
-}
