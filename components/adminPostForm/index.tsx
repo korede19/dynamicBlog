@@ -3,7 +3,7 @@ import React, { useState, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createBlogPost } from "@/lib/api";
 import Header from "@/components/header";
-import styles from "./styles.module.css"; // Move your styles to a component-specific file
+import styles from "./styles.module.css";
 import PostFormFields from "@/components/postFormField";
 import PostEditor from "@/components/postEditor";
 

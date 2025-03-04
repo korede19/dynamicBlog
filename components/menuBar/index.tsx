@@ -28,6 +28,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       <div className={styles.btnContain}>
         <div className={styles.toolSection}>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={`${styles.button} ${
               editor.isActive("bold") ? styles.active : ""
@@ -37,6 +38,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             <Bold className="w-5 h-5" />
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={`${styles.button} ${
               editor.isActive("italic") ? styles.active : ""
@@ -49,6 +51,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   
         <div className={styles.toolSection}>
           <button
+            type="button"
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 1 }).run()
             }
@@ -60,6 +63,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             <Heading1 className="w-5 h-5" />
           </button>
           <button
+            type="button"
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 2 }).run()
             }
@@ -71,6 +75,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             <Heading2 className="w-5 h-5" />
           </button>
           <button
+            type="button"
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 3 }).run()
             }
@@ -86,6 +91,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         {/* Lists Section */}
         <div className={styles.toolSection}>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             className={`${styles.button} ${
               editor.isActive("bulletList") ? styles.active : ""
@@ -95,6 +101,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             <List className="w-5 h-5" />
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             className={`${styles.button} ${
               editor.isActive("orderedList") ? styles.active : ""
@@ -108,6 +115,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         {/* Block Formatting */}
         <div className={styles.toolSection}>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
             className={`${styles.button} ${
               editor.isActive("codeBlock") ? styles.active : ""
@@ -117,6 +125,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             <Code className="w-5 h-5" />
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
             className={`${styles.button} ${
               editor.isActive("blockquote") ? styles.active : ""
@@ -129,6 +138,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   
         <div className={styles.toolSection}>
           <button
+            type="button"
             onClick={() => editor.chain().focus().setTextAlign("left").run()}
             className={styles.button}
             title="Align Left"
@@ -136,6 +146,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             <AlignLeft className="w-5 h-5" />
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().setTextAlign("center").run()}
             className={styles.button}
             title="Align Center"
@@ -143,6 +154,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             <AlignCenter className="w-5 h-5" />
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().setTextAlign("right").run()}
             className={styles.button}
             title="Align Right"
@@ -154,6 +166,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         {/* Undo/Redo */}
         <div className={styles.toolSection}>
           <button
+            type="button"
             onClick={() => editor.chain().focus().undo().run()}
             className={styles.button}
             disabled={!editor.can().undo()}
@@ -162,6 +175,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             <Undo className="w-5 h-5" />
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().redo().run()}
             className={styles.button}
             disabled={!editor.can().redo()}
@@ -174,6 +188,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         {/* Links and Media */}
         <div className={styles.toolSection}>
           <button
+            type="button"
             onClick={() => {
               const url = window.prompt("Enter URL");
               if (url) {
@@ -192,6 +207,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         {/* Clear Formatting */}
         <div className={styles.toolSection}>
           <button
+            type="button"
             onClick={() =>
               editor.chain().focus().clearNodes().unsetAllMarks().run()
             }
@@ -205,4 +221,4 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
     );
   };
 
-  export default MenuBar
+  export default MenuBar;
