@@ -1,10 +1,9 @@
 "use client";
-
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createBlogPost } from "@/lib/api";
 import Header from "@/components/header";
-import styles from "./page.module.css";
+import styles from "./styles.module.css"; // Move your styles to a component-specific file
 import PostFormFields from "@/components/postFormField";
 import PostEditor from "@/components/postEditor";
 
@@ -130,7 +129,8 @@ const AdminPostForm = () => {
       }
 
       await createBlogPost(postData);
-      router.push("/admin/posts");
+      alert("Post created successfully!");
+      router.push("/admin/posts"); // Make sure this path matches your file structure
     } catch (error) {
       console.error("Error creating post:", error);
       alert("Failed to create post. Please try again.");

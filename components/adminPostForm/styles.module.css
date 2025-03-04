@@ -24,9 +24,12 @@
   padding: 15px 60px;
   color: #ffffff;
   font-size: 18px;
-  border: 0px;
-  border-radius: 10px;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.2s;
   font-family: var(--font-encode-sans);
 }
 
@@ -37,13 +40,13 @@
 }
 
 .cancelBtn {
-  background-color: #770909;
-  padding: 15px 60px;
-  color: #ffffff;
-  font-size: 18px;
-  border: 0px;
-  border-radius: 10px;
+  background-color: #f3f4f6;
+  color: #111827;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
   cursor: pointer;
   font-family: var(--font-encode-sans);
+  transition: background-color 0.2s;
 }
-

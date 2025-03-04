@@ -1,0 +1,53 @@
+.btnContain {
+    display: flex;
+    gap: 20pxx;
+  }
+  
+  .allContain {
+    width: unset;
+  }
+  
+  .pgContain {
+    max-width: 1400px;
+    margin: auto;
+    padding: 60px 0px;
+  }
+  
+  .pgContain h2 {
+    font-size: 50px;
+    font-weight: 700;
+    padding-bottom: 60px;
+  }
+  
+  .submitBtn {
+    background-color: #2a2725;
+    padding: 15px 60px;
+    color: #ffffff;
+    font-size: 18px;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: var(--font-encode-sans);
+  }
+  
+  .formFooter {
+    padding: 60px 0px;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .cancelBtn {
+    background-color: #f3f4f6;
+    color: #111827;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: var(--font-encode-sans);
+    transition: background-color 0.2s;
+  }
+  

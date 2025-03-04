@@ -1,0 +1,193 @@
+.container {
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  .pageHeader {
+    display: flex;
+    max-width: 1400px;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2rem auto;
+  }
+  
+  .createButton {
+    background-color: #3a4a3f;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .createButton:hover {
+    background-color: #2a2725;
+  }
+  
+  .postsTable {
+   max-width: 1400px;
+    overflow-x: auto;
+    margin: 0rem auto 2rem auto;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .postsTable table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .postsTable th, 
+  .postsTable td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .postsTable th {
+    font-weight: 600;
+    background-color: #f9fafb;
+  }
+  
+  .thumbnailContainer {
+    position: relative;
+    width: 80px;
+    height: 50px;
+    border-radius: 0.25rem;
+    overflow: hidden;
+  }
+  
+  .thumbnail {
+    object-fit: cover;
+  }
+  
+  .noImage {
+    width: 80px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    color: #666;
+  }
+  
+  .actionButtons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .viewButton,
+  .editButton,
+  .deleteButton {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  
+  .viewButton {
+    background-color: #f3f4f6;
+    color: #111827;
+    text-decoration: none;
+  }
+  
+  .editButton {
+    background-color: #fef3c7;
+    color: #92400e;
+    text-decoration: none;
+  }
+  
+  .deleteButton {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: none;
+  }
+  
+  .viewButton:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .editButton:hover {
+    background-color: #fde68a;
+  }
+  
+  .deleteButton:hover {
+    background-color: #fecaca;
+  }
+  
+  .loading {
+    text-align: center;
+    padding: 5rem 0;
+    font-size: 1.2rem;
+    color: #666;
+  }
+  
+  .error {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .noPosts {
+    text-align: center;
+    padding: 3rem;
+    background-color: #f9f9f9;
+    border-radius: 0.5rem;
+  }
+  
+  .imageCell {
+    width: 100px;
+  }
+  
+  .titleCell {
+    min-width: 200px;
+  }
+  
+  .dateCell {
+    width: 120px;
+  }
+  
+  .actionCell {
+    width: 180px;
+  }
+
+.logoutBtn{
+  width: 1400px;
+  margin: auto;
+}
+
+  .logoutBtn button{
+    background-color: #470404;
+    color: #fff;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: var(--font-encode-sans);
+    transition: background-color 0.2s;
+  }
+  
+  @media (max-width: 768px) {
+    .dateCell {
+      display: none;
+    }
+    
+    .actionButtons {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    
+    .viewButton,
+    .editButton,
+    .deleteButton {
+      text-align: center;
+    }
+  }
