@@ -1,7 +1,8 @@
 "use client";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent } from "react";
 import { Camera } from "lucide-react";
 import styles from "./styles.module.css";
+import Image from "next/image";
 
 interface ImageUploaderProps {
   imageUrl: string;
@@ -20,7 +21,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     <div className={styles.upload}>
       {imageUrl ? (
         <div className={styles.formData}>
-          <img src={imageUrl} alt="Preview" className={styles.imagePreview} />
+          <Image src={imageUrl} width={400} height={400} alt="Preview" className={styles.imagePreview}  />
           <button
             type="button"
             className={styles.removeImageBtn}
