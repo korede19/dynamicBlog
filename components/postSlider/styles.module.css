@@ -1,0 +1,46 @@
+.sliderContainer {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.swiper{
+    overflow: auto;
+}
+
+.slide {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+}
+
+.image {
+  width: 100%;
+  height: 200px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin: 10px 0;
+}
+
+.content {
+  font-size: 1rem;
+  color: #666;
+  padding: 0 10px;
+}
+
+.blogLink{
+    text-decoration: none;
+    color: #222;
+}
+
+.blogLink:hover{
+    color: #91a673;
+    transition: all 0.4s ease-in-out;
+}

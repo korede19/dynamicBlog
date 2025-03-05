@@ -16,3 +16,7 @@
   resize: none;
   width: 100%;
 }
+
+.swiper {
+  padding: 30px 10px !important;
+}
