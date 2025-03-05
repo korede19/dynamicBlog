@@ -9,7 +9,7 @@ import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import Link from "next/link";
 import { fetchPostsByCategory } from "../../lib/firestore";
-import styles from "./styles.module.css"; // Add your custom styles
+import styles from "./styles.module.css"; 
 
 interface BlogPost {
   id: string;
@@ -17,7 +17,7 @@ interface BlogPost {
   imageUrl: string;
   content: string;
   categoryId: string;
-  slug?: string; // Ensure your post has a slug
+  slug?: string;
 }
 
 const stripHtmlTags = (html: string) => {
