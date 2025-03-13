@@ -4,6 +4,7 @@ import Facebook from "@/svg/facebook";
 import Twitter from "@/svg/twitter";
 import Insatagram from "@/svg/instagram";
 import Search from "@/svg/search";
+import Link from "next/link";
 
 const Topbar = () => {
   return (
@@ -18,6 +19,11 @@ const Topbar = () => {
           <div className={styles.searchForm}>
             <input type="text" placeholder="Search..." />
             <Search />
+          </div>
+          <div className={styles.loginBtn}>
+            <button>
+              <Link href="/admin/login">Login</Link>
+            </button>
           </div>
         </div>
       </div>

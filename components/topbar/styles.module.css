@@ -14,27 +14,56 @@
 .medias {
   display: flex;
   gap: 20px;
+  width: 20%;
   cursor: pointer;
 }
 
 .searchForm {
-  background-color: #3a4a3f;
+  background-color: #f6f2f1;
+  width: 60%;
   display: flex;
+  justify-content: space-between;
   gap: 10px;
   align-items: center;
   border-radius: 4px;
   padding: 5px 10px;
-  color: #fff;
+  color: #3a4a3f;
 }
 
 .searchForm input {
   background-color: transparent;
-  color: #fff;
-  font-family: var(--font-lato);
+  color: #3a4a3f;
+  padding: 10px 20px;
+  font-family: var(--font-encode-sans);
+  font-size: 18px;
   outline: none;
   border: 0px;
 }
 
 .searchForm input::placeholder {
+  color: #3a4a3f;
+  font-size: 18px;
+  font-family: var(--font-encode-sans);
+}
+
+.loginBtn{
+  width: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.loginBtn button{
+  background-color: #3a4a3f;
   color: #fff;
+  border: 0px;
+  padding: 10px 30px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.loginBtn button > a{
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-encode-sans);
 }

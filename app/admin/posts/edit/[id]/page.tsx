@@ -4,7 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { doc, getDoc, updateDoc  } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Header from "@/components/header";
-import styles from "./styles.module.css"; // Adjust path as needed
+import styles from "./styles.module.css";
 import PostFormFields from "@/components/postFormField";
 import PostEditor from "@/components/postEditor";
 
