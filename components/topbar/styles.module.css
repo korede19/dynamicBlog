@@ -32,6 +32,7 @@
 
 .searchForm input {
   background-color: transparent;
+  width: 100%;
   color: #3a4a3f;
   padding: 10px 20px;
   font-family: var(--font-encode-sans);

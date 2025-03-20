@@ -1,0 +1,18 @@
+.heroCol {
+  display: flex;
+  max-width: 1400px;
+  margin: auto;
+  align-items: center;
+  width: unset;
+}
+
+.colOne {
+  width: 60%;
+}
+
+.colTwo {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
