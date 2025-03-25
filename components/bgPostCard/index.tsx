@@ -4,14 +4,18 @@ import { fetchPostsByCategory } from "@/lib/firestore";
 import styles from "./styles.module.css";
 import Link from "next/link";
 
+interface FirestoreTimestamp {
+  toDate: () => Date;
+}
+
 interface BlogPost {
   id: string;
   title: string;
   imageUrl: string;
   content: string;
   categoryId: string;
-  createdAt: any;
-  updatedAt: any;
+  createdAt: Date | FirestoreTimestamp;
+  updatedAt: Date | FirestoreTimestamp;
   slug?: string;
 }
 
@@ -23,42 +27,32 @@ const stripHtmlTags = (html: string) => {
   return html.replace(/<[^>]*>?/gm, "");
 };
 
-// Improved date formatting function to handle different date formats
-const formatDate = (dateValue: any) => {
+const formatDate = (dateValue: Date | FirestoreTimestamp) => {
   if (!dateValue) return "No date";
-
-  let date;
-
+  
+  let date: Date;
+  
   // Check if it's a Firestore timestamp (has toDate method)
-  if (dateValue && typeof dateValue.toDate === "function") {
+  if ('toDate' in dateValue) {
     date = dateValue.toDate();
-  }
+  } 
   // Check if it's already a Date object
-  else if (dateValue instanceof Date) {
-    date = dateValue;
+  else {
+    date = dateValue as Date;
   }
-  // Check if it's a timestamp number
-  else if (typeof dateValue === "number") {
-    date = new Date(dateValue);
-  }
-  // Check if it's a string that can be parsed
-  else if (typeof dateValue === "string") {
-    date = new Date(dateValue);
-  } else {
-    return "Invalid date";
-  }
-
+  
   // Check if the date is valid
   if (isNaN(date.getTime())) {
     return "Invalid date";
   }
-
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+  
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
   });
 };
+
 const PostCard = ({ categoryId, categoryName }: categoryProps) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
