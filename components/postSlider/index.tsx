@@ -35,7 +35,6 @@ const stripHtmlTags = (html: string) => {
   return html.replace(/<[^>]*>?/gm, "");
 };
 
-// Improved date formatting function to handle different date formats
 const formatDate = (dateValue: Date | FirestoreTimestamp) => {
   if (!dateValue) return "No date";
   
