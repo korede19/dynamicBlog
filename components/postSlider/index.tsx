@@ -99,6 +99,7 @@ const CategorySlider = ({ categoryId, categoryName }: CategorySliderProps) => {
       ) : posts.length === 0 ? (
         <div className={styles.noPosts}>No posts found for this category</div>
       ) : (
+        <div className={styles.sliderContain}>
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           spaceBetween={30}
@@ -157,6 +158,7 @@ const CategorySlider = ({ categoryId, categoryName }: CategorySliderProps) => {
             </SwiperSlide>
           ))}
         </Swiper>
+        </div>
       )}
     </div>
   );
