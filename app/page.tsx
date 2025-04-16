@@ -3,6 +3,7 @@ import Header from "@/components/header";
 import styles from "./page.module.css";
 import CategorySlider from "@/components/postSlider";
 import PostCard from "@/components/bgPostCard";
+import DiscoverCategories from "@/components/discoverCategories";
 
 const LandingPage = () => {
   return (
@@ -17,6 +18,7 @@ const LandingPage = () => {
           <PostCard categoryId="category5" categoryName="Business" />
         </div>
       </div>
+      <DiscoverCategories />
     </>
   );
 };
