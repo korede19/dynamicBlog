@@ -21,9 +21,7 @@ const Topbar = () => {
             <Search />
           </div>
           <div className={styles.loginBtn}>
-            <button>
-              <Link href="/admin/login">Login</Link>
-            </button>
+              <Link href="/admin/login"><button>Login</button></Link>
           </div>
         </div>
       </div>

@@ -1,0 +1,188 @@
+.allPostsContainer {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .sectionTitle {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+  
+  .threeColumnGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  @media (max-width: 1024px) {
+    .threeColumnGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .threeColumnGrid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .postCard {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    background-color: #fff;
+    height: 100%;
+  }
+  
+  .postCard:hover {
+    transform: translateY(-5px);
+  }
+  
+  .postCardImage {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .postMeta {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: #2f2f2f;
+  }
+  
+  .category {
+    font-weight: 500;
+    color: #2f2f2f;
+  }
+  
+  .postDate {
+    margin: 0;
+  }
+  
+  .postTitle {
+    padding: 0 1rem;
+    margin: 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  
+  .postExcerpt {
+    padding: 0 1rem;
+    margin: 0.5rem 0 1rem;
+    font-size: 0.875rem;
+    color: #4a5568;
+    flex-grow: 1;
+  }
+  
+  .readMore {
+    display: inline-block;
+    margin: 0 1rem 1rem;
+    width: 100px;
+    padding: 0.5rem 1rem;
+    background-color: #3a4a3f;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+  }
+  
+  .readMore:hover {
+    background-color: #4c6e57;
+  }
+  
+  .emptyCard {
+    height: 100%;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+  }
+  
+  .navigationControls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+    gap: 1rem;
+  }
+  
+  .navButton {
+    padding: 0.5rem 1rem;
+    background-color: #3a4a3f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+  }
+  
+  .navButton:hover {
+    background-color: #485f4f;
+  }
+  
+  .navButton:disabled {
+    background-color: #cbd5e0;
+    cursor: not-allowed;
+  }
+  
+  .pageCounter {
+    font-size: 0.875rem;
+    color: #4a5568;
+  }
+  
+  .viewAllContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  .viewAllButton {
+    padding: 0.75rem 1.5rem;
+    background-color: #3a4a3f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .viewAllButton:hover {
+    background-color: #46634f;
+  }
+  
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.25rem;
+    color: #4a5568;
+  }
+  
+  .noPosts {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.25rem;
+    color: #4a5568;
+    background-color: #f7fafc;
+    border-radius: 8px;
+  }

@@ -4,18 +4,17 @@ export const menuLinks = [
     link: "/",
   },
   {
-    title: "Fitness",
+    title: "All Posts",
+    link: "/blog/posts",
+  },
+  {
+    title: "About",
     link: "/",
   },
   {
-    title: "Nutrition",
+    title: "Contact",
     link: "/",
   },
-  {
-    title: "Travel",
-    link: "/",
-  },
-
 ];
 
 export const categories = [

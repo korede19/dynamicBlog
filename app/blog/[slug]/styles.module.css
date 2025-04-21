@@ -74,6 +74,16 @@
     font-size: 1.2rem;
     color: #e53e3e;
   }
+
+  .backLink button{
+    background-color: #3a4a3f;
+    padding: 10px 20px;
+    border: 0px;
+    border-radius: 5px;
+    color: #fff;
+    font-family: unset;
+    cursor: pointer;
+  }
   
   @media (max-width: 768px) {
     .postContainer {

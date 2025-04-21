@@ -94,7 +94,7 @@ const PostCard = ({ categoryId, categoryName }: categoryProps) => {
             <p className={styles.postContent}>
               {stripHtmlTags(post.content).substring(0, 100)}...
             </p>
-            <Link href={`/post/${post.slug}`} className={styles.readMore}>
+            <Link href={`/blog/${post.slug}`} className={styles.readMore}>
               <p>Read more</p>
             </Link>
           </div>

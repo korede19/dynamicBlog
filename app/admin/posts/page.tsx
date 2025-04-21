@@ -16,6 +16,7 @@ import Header from "@/components/header";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./styles.module.css";
+import Footer from "@/components/footer";
 
 interface BlogPost {
   id: string;
@@ -192,6 +193,7 @@ export default function AdminPostsPage() {
       <div className={styles.logoutBtn}>
         <button onClick={handleLogout}>Logout</button>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -6,7 +6,9 @@ import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Header from '@/components/header';
 import Image from 'next/image';
+import Link from 'next/link';
 import styles from './styles.module.css';
+import Footer from '@/components/footer';
 
 interface BlogPost {
   title: string;
@@ -111,7 +113,13 @@ export default function BlogPostPage() {
           className={styles.postContent}
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
+        <Link href="/blog/posts" className={styles.backLink}>
+        <button>
+          All Posts
+        </button>
+        </Link>
       </article>
+      <Footer />
     </div>
   );
 }

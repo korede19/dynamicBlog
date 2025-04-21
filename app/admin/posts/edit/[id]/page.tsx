@@ -7,6 +7,7 @@ import Header from "@/components/header";
 import styles from "./styles.module.css";
 import PostFormFields from "@/components/postFormField";
 import PostEditor from "@/components/postEditor";
+import Footer from "@/components/footer";
 
 // Cloudinary configuration
 const CLOUDINARY_UPLOAD_PRESET =
@@ -240,6 +241,7 @@ export default function EditPostPage() {
           </div>
         </form>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -1,25 +1,25 @@
 .sectionContainer{
     background-color: #00000010;
     padding: 40px 0px;
-    width: unset;
+    width: 100%;
     overflow: hidden;
 }
 
 .sectionTitle{
-    width: 1400px;
+    width: 1200px;
     margin: 0px auto;
     font-size: 35px;
     padding: 20px 0px;
 }
 
 .sectionContain{
-    width: 1400px;
+    width: 1200px;
     margin: 0px auto;
     display: grid;
-    grid-template-columns: 2fr 2fr;
+grid-template-columns: 2fr 2fr;
     box-sizing: border-box;
-    gap: 20px;
-    border-radius: 20px;
+        gap: 20px;
+border-radius: 20px;
 }
 
 .categoryCard{
@@ -41,7 +41,7 @@
     color: white;
     font-size: 20px;
     padding: 20px;
-    border-radius: 0px 0px 10px 10px;
+border-radius: 0px 0px 10px 10px;
 }
 
 .categoryOverlay h3{
