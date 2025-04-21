@@ -35,21 +35,22 @@ const formatDate = (dateValue: Date | FirestoreTimestamp | undefined) => {
   let date: Date;
 
   try {
-    if (dateValue && typeof dateValue === "object" && "toDate" in dateValue) {
+    if (typeof dateValue === "object" && "toDate" in dateValue) {
       date = dateValue.toDate();
     } else {
       date = dateValue as Date;
     }
 
-    if (isNaN(date.getTime())) {
-      return "Invalid date";
-    }
+    if (isNaN(date.getTime())) return "Invalid date";
 
-    return date.toLocaleDateString("en-US", {
+    const formatter = new Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
+      timeZone: "UTC",
     });
+
+    return formatter.format(date);
   } catch (error) {
     console.error("Error formatting date:", error);
     return "Invalid date";
@@ -78,11 +79,11 @@ const AllPosts = ({ categoryIds, categoryNames = {} }: AllPostsProps) => {
             const dateA =
               a.createdAt && "toDate" in a.createdAt
                 ? a.createdAt.toDate()
-                : a.createdAt || new Date();
+                : (a.createdAt as Date);
             const dateB =
               b.createdAt && "toDate" in b.createdAt
                 ? b.createdAt.toDate()
-                : b.createdAt || new Date();
+                : (b.createdAt as Date);
             return dateB.getTime() - dateA.getTime();
           } catch (error) {
             console.error("Error sorting dates:", error);
@@ -125,9 +126,7 @@ const AllPosts = ({ categoryIds, categoryNames = {} }: AllPostsProps) => {
   );
 
   const getCategoryName = (categoryId: string): string => {
-    return categoryNames && categoryNames[categoryId]
-      ? categoryNames[categoryId]
-      : "Uncategorized";
+    return categoryNames[categoryId] || "Uncategorized";
   };
 
   if (loading) {
