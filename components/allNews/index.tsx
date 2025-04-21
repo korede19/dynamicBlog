@@ -35,14 +35,12 @@ const formatDate = (dateValue: Date | FirestoreTimestamp | undefined) => {
   let date: Date;
 
   try {
-    // Check if it's a Firestore timestamp (has toDate method)
     if (dateValue && typeof dateValue === "object" && "toDate" in dateValue) {
       date = dateValue.toDate();
     } else {
       date = dateValue as Date;
     }
 
-    // Check if the date is valid
     if (isNaN(date.getTime())) {
       return "Invalid date";
     }
@@ -62,7 +60,7 @@ const AllPosts = ({ categoryIds, categoryNames = {} }: AllPostsProps) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const postsPerPage = 3; // Show 3 posts at once
+  const postsPerPage = 3;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -70,13 +68,11 @@ const AllPosts = ({ categoryIds, categoryNames = {} }: AllPostsProps) => {
         setLoading(true);
         let allPosts: BlogPost[] = [];
 
-        // Fetch posts from each category
         for (const categoryId of categoryIds) {
           const categoryPosts = await fetchPostsByCategory(categoryId);
           allPosts = [...allPosts, ...categoryPosts];
         }
 
-        // Sort by date (newest first)
         allPosts.sort((a, b) => {
           try {
             const dateA =
@@ -116,16 +112,17 @@ const AllPosts = ({ categoryIds, categoryNames = {} }: AllPostsProps) => {
     setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : 0));
   };
 
-  // Get current posts based on pagination
-  const currentPosts = posts.slice(
-    currentPage * postsPerPage,
-    (currentPage + 1) * postsPerPage
-  );
+  const getPaddedPosts = (posts: BlogPost[]): BlogPost[] => {
+    const padded = [...posts];
+    while (padded.length < postsPerPage) {
+      padded.push({} as BlogPost);
+    }
+    return padded;
+  };
 
-  // Fill with empty posts if we don't have enough
-  while (currentPosts.length < postsPerPage) {
-    currentPosts.push({} as BlogPost);
-  }
+  const currentPosts = getPaddedPosts(
+    posts.slice(currentPage * postsPerPage, (currentPage + 1) * postsPerPage)
+  );
 
   const getCategoryName = (categoryId: string): string => {
     return categoryNames && categoryNames[categoryId]
