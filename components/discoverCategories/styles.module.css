@@ -8,7 +8,8 @@
 .sectionTitle {
   width: 1200px;
   margin: 0px auto;
-  font-size: 35px;
+  font-size: 2rem;
+  font-weight: 800;
   padding: 20px 0px;
 }
 
@@ -36,16 +37,18 @@
 
 .categoryOverlay {
   width: 100%;
+  display: flex;
+  justify-content: space-between;
   background-color: #3a4a3f;
   align-items: center;
   color: white;
   font-size: 20px;
-  padding: 20px;
+  padding: 10px;
   border-radius: 0px 0px 10px 10px;
 }
 
 .categoryOverlay h3 {
-  font-size: 25px;
+  font-size: 20px;
   margin: 0px;
   padding: 0px;
   cursor: pointer;

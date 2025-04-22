@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { fetchPostsByCategory } from "@/lib/firestore";
 import styles from "./styles.module.css";
 import Link from "next/link";
+import SkeletonLoader from "../skeletonLoader";
 
 interface FirestoreTimestamp {
   toDate: () => Date;
@@ -29,27 +30,27 @@ const stripHtmlTags = (html: string) => {
 
 const formatDate = (dateValue: Date | FirestoreTimestamp) => {
   if (!dateValue) return "No date";
-  
+
   let date: Date;
-  
+
   // Check if it's a Firestore timestamp (has toDate method)
-  if ('toDate' in dateValue) {
+  if ("toDate" in dateValue) {
     date = dateValue.toDate();
-  } 
+  }
   // Check if it's already a Date object
   else {
     date = dateValue as Date;
   }
-  
+
   // Check if the date is valid
   if (isNaN(date.getTime())) {
     return "Invalid date";
   }
-  
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
 };
 
@@ -74,7 +75,13 @@ const PostCard = ({ categoryId, categoryName }: categoryProps) => {
 
   return (
     <div className={styles.container}>
-      {loading && <p className={styles.loading}>Loading posts...</p>}
+      {loading ? (
+        <div className={styles.sliderContain}>
+          {/* Replace text loading with skeleton loader */}
+
+          <SkeletonLoader type="card" />
+        </div>
+      ) : null}
       <div className={styles.postContainer}>
         {posts.map((post) => (
           <div

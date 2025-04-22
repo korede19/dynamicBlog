@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./styles.module.css";
 import { categories } from "@/utils/data";
 import Image from "next/image";
+import Plus from "@/svg/plus";
 
 const DiscoverCategories = () => {
   return (
@@ -20,6 +21,7 @@ const DiscoverCategories = () => {
               />
               <div className={styles.categoryOverlay}>
                 <h3>{item.name}</h3>
+                <Plus />
               </div>
             </div>
           );

@@ -14,8 +14,8 @@ interface HeaderProps {
 const MegaMenu: React.FC<HeaderProps> = ({
   navItems = [
     { name: "Home", href: "/" },
-    { name: "Posts", href: "/blog/posts" },
     { name: "About", href: "/about" },
+    { name: "Posts", href: "/blog/posts" },
     { name: "Contact", href: "/contact" }
   ],
   logoText = "Fynex Blog"

@@ -4,6 +4,7 @@ import { fetchAllPosts } from "@/lib/firestore";
 import styles from "./styles.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import SkeletonLoader from "../skeletonLoader";
 
 interface FirestoreTimestamp {
   toDate(): Date;
@@ -139,7 +140,7 @@ const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
       )}
 
       {loading ? (
-        <div className={styles.loading}>Loading posts...</div>
+        <SkeletonLoader type="Posts" />
       ) : !filteredPosts || filteredPosts.length === 0 ? (
         <div className={styles.noPosts}>No posts found</div>
       ) : (

@@ -4,6 +4,7 @@ import { fetchPostsByCategory } from "@/lib/firestore";
 import styles from "./styles.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import SkeletonLoader from "../skeletonLoader";
 
 interface FirestoreTimestamp {
   toDate(): Date;
@@ -130,7 +131,7 @@ const AllPosts = ({ categoryIds, categoryNames = {} }: AllPostsProps) => {
   };
 
   if (loading) {
-    return <div className={styles.loading}>Loading posts...</div>;
+    return <SkeletonLoader type="Posts" />;
   }
 
   if (posts.length === 0) {

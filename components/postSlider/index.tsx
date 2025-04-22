@@ -9,7 +9,8 @@ import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import Link from "next/link";
 import { fetchPostsByCategory } from "../../lib/firestore";
-import styles from "./styles.module.css"; 
+import styles from "./styles.module.css";
+import SkeletonLoader from "../skeletonLoader";
 
 interface FirestoreTimestamp {
   toDate: () => Date;
@@ -87,7 +88,20 @@ const CategorySlider = ({ categoryId, categoryName }: CategorySliderProps) => {
   return (
     <div className={styles.sliderContainer}>      
       {loading ? (
-        <div className={styles.loading}>Loading posts...</div>
+        <div className={styles.sliderContain}>
+          {/* Replace text loading with skeleton loader */}
+          <Swiper
+            modules={[Navigation, Pagination]}
+            spaceBetween={30}
+            slidesPerView={1}
+            navigation={false}
+            pagination={{ clickable: true }}
+          >
+            <SwiperSlide>
+              <SkeletonLoader type="slide" />
+            </SwiperSlide>
+          </Swiper>
+        </div>
       ) : posts.length === 0 ? (
         <div className={styles.noPosts}>No posts found for this category</div>
       ) : (
