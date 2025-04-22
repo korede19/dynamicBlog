@@ -1,12 +1,10 @@
 import * as React from "react";
-import Header from "@/components/header";
 import styles from "./page.module.css";
 import CategorySlider from "@/components/postSlider";
 import PostCard from "@/components/bgPostCard";
 import DiscoverCategories from "@/components/discoverCategories";
 import AllPosts from "@/components/allNews";
 import Footer from "@/components/footer";
-import MegaHeader from "@/components/megaMenu";
 
 const LandingPage = () => {
   return (
