@@ -6,11 +6,11 @@ import PostCard from "@/components/bgPostCard";
 import DiscoverCategories from "@/components/discoverCategories";
 import AllPosts from "@/components/allNews";
 import Footer from "@/components/footer";
+import MegaHeader from "@/components/megaMenu";
 
 const LandingPage = () => {
   return (
     <>
-      <Header />
       <div className={styles.heroCol}>
         <div className={styles.colOne}>
           <CategorySlider categoryName="Recent News" categoryId="category1" />
@@ -22,10 +22,11 @@ const LandingPage = () => {
       </div>
       <DiscoverCategories />
       <AllPosts
-        categoryIds={["category1", "category2"]}
+        categoryIds={["category1", "category2", "category3"]}
         categoryNames={{
           category1: "Fitness",
           category2: "Nutrition",
+          category3: "Health & Wellness",
         }}
       />
       <Footer />

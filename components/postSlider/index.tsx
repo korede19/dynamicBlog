@@ -99,7 +99,7 @@ const CategorySlider = ({ categoryId, categoryName }: CategorySliderProps) => {
           navigation
           pagination={{ clickable: true }}
           autoplay={{ delay: 5000 }}
-          loop={posts.length > 3}
+          loop={posts.length > 10}
           breakpoints={{
             320: {
               slidesPerView: 1,

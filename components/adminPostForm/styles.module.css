@@ -1,6 +1,6 @@
 .btnContain {
   display: flex;
-  gap: 20pxx;
+  gap: 20px;
 }
 
 .allContain {
@@ -10,7 +10,7 @@
 .pgContain {
   max-width: 1400px;
   margin: auto;
-  padding: 60px 0px;
+  padding: 100px 0px 20px 0px;
 }
 
 .pgContain h2 {

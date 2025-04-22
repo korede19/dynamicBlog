@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import Header from '@/components/header';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './styles.module.css';
@@ -62,7 +61,7 @@ export default function BlogPostPage() {
   if (loading) {
     return (
       <div className={styles.container}>
-        <Header />
+  
         <div className={styles.loading}>Loading post...</div>
       </div>
     );
@@ -71,7 +70,6 @@ export default function BlogPostPage() {
   if (error || !post) {
     return (
       <div className={styles.container}>
-        <Header />
         <div className={styles.error}>{error || 'Post not found'}</div>
       </div>
     );
@@ -89,7 +87,6 @@ export default function BlogPostPage() {
 
   return (
     <div className={styles.container}>
-      <Header />
       <article className={styles.postContainer}>
         <h1 className={styles.postTitle}>{post.title}</h1>
         <div className={styles.postMeta}>

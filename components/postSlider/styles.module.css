@@ -118,3 +118,29 @@
   opacity: 1;
 }
 
+@media screen and (max-width: 768px) {
+  .sliderContainer {
+    padding: 0 1rem;
+  }
+
+  .slide {
+    height: 500px;
+    padding: 1rem;
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .postContent {
+    font-size: 14px;
+  }
+
+  .readMore {
+    font-size: 0.8rem;
+    padding: 0.5rem 1.5rem;
+  }
+  
+}
+

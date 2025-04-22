@@ -2,10 +2,10 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createBlogPost } from "@/lib/api";
-import Header from "@/components/header";
 import styles from "./styles.module.css";
 import PostFormFields from "@/components/postFormField";
 import PostEditor from "@/components/postEditor";
+import Footer from "../footer";
 
 // Cloudinary configuration
 const CLOUDINARY_UPLOAD_PRESET =
@@ -141,7 +141,6 @@ const AdminPostForm = () => {
 
   return (
     <div className={styles.allContain}>
-      <Header />
       <div className={styles.pgContain}>
         <div className={styles.formHeader}>
           <h2>Create a New Post</h2>
@@ -188,6 +187,7 @@ const AdminPostForm = () => {
           </div>
         </form>
       </div>
+      <Footer />
     </div>
   );
 };

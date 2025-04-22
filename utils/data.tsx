@@ -28,4 +28,9 @@ export const categories = [
     name: "Nutrition",
     image: "/assets/nutrition.jpg",
   },
+  {
+    id: "category2",
+    name: "Health & Wellness",
+    image: "/assets/health-wellness.jpg",
+  },
 ]

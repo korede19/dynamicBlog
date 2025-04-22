@@ -54,7 +54,7 @@ const PostFormFields: React.FC<PostFormFieldsProps> = ({
             <option value="">Select a category</option>
             <option value="category1">Fitness</option>
             <option value="category2">Nutrition</option>
-            <option value="category3">Other News</option>
+            <option value="category3">Health & Wellnes</option>
           </select>
         </div>
 

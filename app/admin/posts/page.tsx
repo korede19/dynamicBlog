@@ -12,7 +12,6 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import Header from "@/components/header";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./styles.module.css";
@@ -100,7 +99,6 @@ export default function AdminPostsPage() {
   if (loading) {
     return (
       <div className={styles.container}>
-        <Header />
         <div className={styles.loading}>Loading posts...</div>
       </div>
     );
@@ -108,7 +106,6 @@ export default function AdminPostsPage() {
 
   return (
     <div className={styles.container}>
-      <Header />
       <div className={styles.pageHeader}>
         <h1>Manage Blog Posts</h1>
         <button
