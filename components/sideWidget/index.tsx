@@ -22,9 +22,6 @@ interface BlogPost {
   slug?: string;
 }
 
-const stripHtmlTags = (html: string): string => {
-  return html.replace(/<[^>]*>?/gm, "");
-};
 
 const formatDate = (dateValue: Date | FirestoreTimestamp): string => {
   if (!dateValue) return "No date";
