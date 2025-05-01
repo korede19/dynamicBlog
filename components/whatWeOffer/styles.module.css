@@ -1,0 +1,64 @@
+.pgContainer{
+    background-color: #f5f5f5;
+}
+
+.pgcontain{
+    max-width: 1200px;
+    margin: auto;
+    padding: 80px 0px;
+}
+
+.pgcontain > h2{
+    font-size: 40px;
+    font-weight: 800;
+    color: #000000;
+    text-align: center;
+}
+
+.pgcontain > p{
+    font-size: 16px;
+    width: 60%;
+    margin: auto;
+    line-height: 1.6;
+    color: #0c0c0c;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.boxRow{
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
+    padding: 30px 0px;
+    gap: 20px;
+
+}
+
+.offerBox{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #3a4a3f;
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px 20px;
+}
+
+.offerText{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.otherTexts{
+    font-size: 16px;
+    line-height: 1.6;
+    color: #000000;
+}
+
+.otherTexts > ul{
+    display: flex;
+    gap: 50px;
+    list-style-type:circle;
+    font-weight: 700;
+}

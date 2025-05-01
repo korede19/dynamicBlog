@@ -1,0 +1,80 @@
+.pgContainer {
+  background-color: #f5f5f5;
+}
+
+.pgContain {
+  max-width: 1200px;
+  margin: auto;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 2fr 2fr;
+  gap: 20px;
+  padding: 60px 0px;
+}
+
+.aboutImage {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);
+}
+
+.otherTexts {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+}
+
+.otherTexts > h2 {
+  font-size: 40px;
+  font-weight: 800;
+}
+
+.otherTexts > p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #0c0c0c;
+  margin-bottom: 10px;
+}
+
+.valuesTab{
+    max-width: 1200px;
+    margin: auto;
+    background-color: #fff;
+    padding: 60px 0px;
+}
+
+.valuesTab > h2{
+    font-size: 40px;
+    font-weight: 800;
+    color: #000000;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.valuesTexts{
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr 2fr;
+    gap: 20px;
+}
+
+.valuesBox{
+    background-color: #3a4a3f;
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.valuesText{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.valuesText > h3{
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    padding-top: 20px;
+}

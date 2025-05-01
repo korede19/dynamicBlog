@@ -22,7 +22,6 @@ interface BlogPost {
   slug?: string;
 }
 
-
 const formatDate = (dateValue: Date | FirestoreTimestamp): string => {
   if (!dateValue) return "No date";
   
