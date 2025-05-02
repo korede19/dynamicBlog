@@ -26,9 +26,9 @@ const AboutComponent = () => {
           workout guides, supplement insights, and motivational content to help
           you crush your goals. From breaking down the latest fitness trends and
           debunking diet myths to sharing effective training routines and
-          recovery strategies, we’re here to fuel your progress—one rep, meal,
+          recovery strategies, we&apos;re here to fuel your progress—one rep, meal,
           and mindset shift at a time. Get ready to transform your body,
-          energize your life, and join a community that’s all about strength,
+          energize your life, and join a community that&apos;s all about strength,
           stamina, and sustainable health!
         </p>
         <div className={styles.aboutContent}>
@@ -66,13 +66,13 @@ const AboutComponent = () => {
               gimmicks.
             </p>
             <p>
-              We don’t believe in quick fixes or one-size-fits-all approaches.
+              We don&apos;t believe in quick fixes or one-size-fits-all approaches.
               Instead, we focus on sustainable training, smart nutrition, and
               the mindset shifts that lead to real, lifelong progress. This is
-              more than just a blog—it’s a community built on hard work,
+              more than just a blog—it&apos;s a community built on hard work,
               honesty, and a shared love for the grind. Whether you're lifting
               for strength, training for endurance, or just starting your
-              fitness journey, we’re here to guide you every step of the way.
+              fitness journey, we&apos;re here to guide you every step of the way.
             </p>
           </div>
         </div>

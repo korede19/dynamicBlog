@@ -10,7 +10,7 @@ const WhatWeOffer = () => {
         <p>
           At PeakPurzuit, we provide science-backed, practical, and engaging
           content to help you level up your fitness, optimize your nutrition,
-          and stay motivated on your health journey. Here’s what you’ll find:
+          and stay motivated on your health journey. Here&apos;s what you&apos;ll find:
         </p>
         <div className={styles.boxRow}>
           {offers.map((index, item) => {
@@ -27,7 +27,7 @@ const WhatWeOffer = () => {
         </div>
         <div className={styles.otherTexts}>
           <p>
-            Whether you're a gym newbie or a seasoned athlete, we’ve got the
+            Whether you&apos;re a gym newbie or a seasoned athlete, we&apos;ve got the
             knowledge and inspiration to help you perform at your best. Our team
             of experienced writers and subject matter experts works tirelessly
             to deliver content that is:
