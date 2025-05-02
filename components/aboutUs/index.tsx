@@ -20,7 +20,7 @@ const AboutComponent = () => {
       <div className={styles.aboutBody}>
         <p>
           Welcome to PeakPurzuit, your ultimate destination for all things
-          health, fitness, and nutrition! Whether you're a gym enthusiast, a
+          health, fitness, and nutrition! Whether you&apos;re a gym enthusiast, a
           beginner on your wellness journey, or someone looking for
           expert-backed nutrition advice, our blog delivers actionable tips,
           workout guides, supplement insights, and motivational content to help
@@ -70,7 +70,7 @@ const AboutComponent = () => {
               Instead, we focus on sustainable training, smart nutrition, and
               the mindset shifts that lead to real, lifelong progress. This is
               more than just a blog—it&apos;s a community built on hard work,
-              honesty, and a shared love for the grind. Whether you're lifting
+              honesty, and a shared love for the grind. Whether you&apos;re lifting
               for strength, training for endurance, or just starting your
               fitness journey, we&apos;re here to guide you every step of the way.
             </p>
