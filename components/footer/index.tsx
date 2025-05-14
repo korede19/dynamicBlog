@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-// import Image from "next/image";
+import Image from "next/image";
 import styles from "./styles.module.css";
 
 const Footer = () => {
@@ -12,14 +12,13 @@ const Footer = () => {
         <div className={styles.footerTop}>
           <div className={styles.footerColumn}>
             <div className={styles.footerLogo}>
-                <h2>Blog Logo</h2>
-              {/* <Image
-                src="/logo.png"
+              <Image
+                src="/assets/newLogo.png"
                 alt="Blog Logo"
                 width={120}
-                height={40}
+                height={100}
                 className={styles.logoImage}
-              /> */}
+              />
             </div>
             <p className={styles.footerDescription}>
               Your go-to source for insightful articles, news, and stories that
@@ -130,13 +129,7 @@ const Footer = () => {
                 <Link href="/privacy-policy">Privacy Policy</Link>
               </li>
               <li>
-                <Link href="/terms">Terms of Service</Link>
-              </li>
-              <li>
-                <Link href="/faq">FAQ</Link>
-              </li>
-              <li>
-                <Link href="/advertise">Advertise with Us</Link>
+                <Link href="/terms-of-service">Terms of Service</Link>
               </li>
             </ul>
           </div>
@@ -174,8 +167,7 @@ const Footer = () => {
           </p>
           <div className={styles.footerBottomLinks}>
             <Link href="/privacy-policy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
-            <Link href="/sitemap">Sitemap</Link>
+            <Link href="/terms-of-service">Terms of Service</Link>
           </div>
         </div>
       </div>

@@ -1,8 +1,9 @@
 import React from "react";
 import styles from "./styles.module.css";
 import Link from "next/link";
-import Image from "next/image";
 import ContactForm from "../contactForm";
+import Gmail from "@/svg/mail";
+import Phone from "@/svg/phonee";
 
 const ContactComp = () => {
   return (
@@ -18,13 +19,26 @@ const ContactComp = () => {
       </div>
       <div className={styles.aboutBody}>
         <div className={styles.colOne}>
-          <Image
-            src="/assets/contact.webp"
-            alt="Contact Us"
-            width={500}
-            height={300}
-            className={styles.aboutImage}
-          />
+          <h2>Contact Details</h2>
+          <p>
+            Don&apos;t hesitate to contact us if you have any other questions,
+            comments, or suggestions or just want to say Hello! We will try to
+            accommodate all your requests.
+          </p>
+          <br />
+          <br />
+          <div className={styles.contactDetails}>
+            <div className={styles.phoneNo}>
+              <Phone />
+              <h2>Phone Number</h2>
+              <p>+234 00 000 000 00</p>
+            </div>
+            <div className={styles.email}>
+              <Gmail />
+              <h2>Email</h2>
+              <p>nfo@peakpurzuit.com</p>
+            </div>
+          </div>
         </div>
         <div className={styles.colTwo}>
           <ContactForm />

@@ -80,12 +80,26 @@ const ContactForm: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/contact", {
+      const emailData = {
+        from: formData.email,
+        subject: formData.subject,
+        body: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${formData.name}</p>
+          <p><strong>Email:</strong> ${formData.email}</p>
+          <p><strong>Subject:</strong> ${formData.subject}</p>
+          <h3>Message:</h3>
+          <p>${formData.message.replace(/\n/g, "<br>")}</p>
+          <p><em>Sent on: ${new Date().toLocaleString()}</em></p>
+        `,
+      };
+
+      const response = await fetch("/api/email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(emailData),
       });
 
       const data = await response.json();
@@ -96,7 +110,6 @@ const ContactForm: React.FC = () => {
           message: "Thank you! Your message has been sent successfully.",
         });
 
-        // Reset form on success
         setFormData({
           name: "",
           email: "",
@@ -122,11 +135,7 @@ const ContactForm: React.FC = () => {
   return (
     <div className={styles.formContainer}>
       <h2 className={styles.formTitle}>Get In Touch</h2>
-      <p>
-        Don’t hesitate to contact us if you have any other questions, comments,
-        or suggestions or just want to say Hello! We will try to accommodate all
-        your requests.
-      </p>
+      <br />
       {submitStatus.message && (
         <div
           className={`${styles.statusMessage} ${

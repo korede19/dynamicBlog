@@ -17,10 +17,42 @@
   padding: 80px 0px 40px 0px;
   display: grid;
   grid-template-columns: 2fr 2fr;
+  align-items: center;
 }
 
-.aboutImage {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
+.colOne h2 {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.colOne p {
+  font-size: 18px;
+  padding-top: 10px;
+}
+
+.contactDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.phoneNo,
+.email {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.phoneNo h2,
+.email h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.phoneNo p,
+.email p {
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
 }

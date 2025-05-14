@@ -1,18 +1,25 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
-interface EmailParams {
+type EmailParams = {
   to: string;
   from: string;
   subject: string;
   text: string;
-  html?: string;
-}
+  html: string;
+  replyTo?: string;
+};
 
-export async function sendEmail({ to, from, subject, text, html }: EmailParams): Promise<void> {
+export async function sendEmail({
+  to,
+  from,
+  subject,
+  text,
+  html,
+}: EmailParams): Promise<void> {
   const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_SERVER || 'smtp.gmail.com',
-    port: parseInt(process.env.EMAIL_PORT || '587'),
-    secure: process.env.EMAIL_SECURE === 'true',
+    host: process.env.EMAIL_SERVER || "smtp.gmail.com",
+    port: parseInt(process.env.EMAIL_PORT || "587"),
+    secure: process.env.EMAIL_SECURE === "true",
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASSWORD,
@@ -26,11 +33,11 @@ export async function sendEmail({ to, from, subject, text, html }: EmailParams):
       to,
       subject,
       text,
-      html: html || text.replace(/\n/g, '<br>'),
+      html: html || text.replace(/\n/g, "<br>"),
     });
-    console.log('Email sent successfully');
+    console.log("Email sent successfully");
   } catch (error) {
-    console.error('Error sending email:', error);
-    throw new Error('Failed to send email');
+    console.error("Error sending email:", error);
+    throw new Error("Failed to send email");
   }
 }
