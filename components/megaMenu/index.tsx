@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './styles.module.css';
 
 interface HeaderProps {
@@ -63,8 +64,7 @@ const MegaMenu: React.FC<HeaderProps> = ({
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.headerContainer}>
-        <Link href="/" className={styles.logo}>
-          {logoText}
+          <Link href='/'>{logoText} <Image src="/assets/logo.png" alt="Logo" width={40} height={40} priority className={styles.logoImage} />
         </Link>
         
         {/* Desktop Navigation */}

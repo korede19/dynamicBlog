@@ -1,67 +1,87 @@
-.aboutHeader{
-    padding: 180px 0px 80px 0px;
-    background-color: #f5f5f5;
-    text-align: center;    
+.aboutHeader {
+  padding: 180px 0px 80px 0px;
+  background-color: #f5f5f5;
+  text-align: center;
 }
 
-.aboutHeader h1{
-    font-size: 50px;
-    font-weight: 700;
-    color: #000000;
-    margin-bottom: 10px;
+.aboutHeader h1 {
+  font-size: 50px;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 10px;
 }
 
-.aboutBody{
-    max-width: 1200px;
-    margin: auto;
-    padding: 80px 0px 40px 0px;
+.aboutBody {
+  max-width: 1200px;
+  margin: auto;
+  padding: 80px 0px 40px 0px;
 }
 
-.aboutBody > p{
-    font-size: 16px;
-    line-height: 1.6;
-    color: #0c0c0c;
-    margin-bottom: 20px;
+.aboutBody > p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #0c0c0c;
+  margin-bottom: 20px;
 }
 
-.aboutContent{
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    padding: 60px 0px;
+.aboutContent {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 60px 0px;
 }
 
-.imageBox{
-    width: 50%;
+.imageBox {
+  width: 50%;
 }
 
-.aboutImage{
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
+.aboutImage {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
 }
 
-.aboutText{
-    flex: 1;
-    padding: 20px;
+.aboutText {
+  flex: 1;
+  padding: 20px;
 }
 
-.aboutText h2{
-    font-size: 30px;
-    font-weight: 700;
-    color: #000000;
-    margin-bottom: 10px;
+.aboutText h2 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 10px;
 }
 
-.aboutText{
-    display: flex;
+.aboutText {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.aboutText > p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #0c0c0c;
+  align-items: justify;
+}
+
+@media screen and (max-width: 768px) {
+  .aboutContent {
     flex-direction: column;
-    gap: 10px;
+    align-items: center;
+  }
+.aboutBody{
+    padding: 40px 20px;
 }
-
-.aboutText > p{
-    font-size: 16px;
-    line-height: 1.6;
-    color: #0c0c0c;
-    align-items: justify;
+  .imageBox {
+    width: 100%;
+  }
+  .aboutText {
+    width: 100%;
+    padding: 0px;
+  }
+  .aboutText h2 {
+    font-size: 24px;
+  }
 }

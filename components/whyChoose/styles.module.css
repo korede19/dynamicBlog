@@ -78,3 +78,23 @@
     color: #ffffff;
     padding-top: 20px;
 }
+
+@media screen and (max-width: 768px) {
+  .pgContain {
+    grid-template-columns: 1fr;
+    padding: 60px 20px;
+  }
+
+  .valuesTexts {
+    grid-template-columns: 1fr;
+  }
+  .otherTexts > h2{
+    font-size: 30px;
+  }
+  .valuesTab{
+    padding: 60px 20px;
+  }
+  .valuesTab > h2{
+    font-size: 30px;
+  }
+}

@@ -1,40 +1,59 @@
-.contain{
-    width: 1200px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
+.contain {
+  width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 2fr 2fr;
+  align-items: center;
+  gap: 30px;
 }
 
-.aboutImage{
+.aboutImage {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);
+}
+.otherTexts > h2 {
+  font-size: 40px;
+  font-weight: 800;
+  color: #000000;
+  margin-bottom: 20px;
+}
+.otherTexts > p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #0c0c0c;
+  margin-bottom: 20px;
+}
+
+.joinButton {
+  background-color: #3a4a3f;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: unset;
+  border: none;
+  transition: all 0.3s ease-in-out;
+}
+
+@media screen and (max-width: 768px) {
+  .contain {
+    width: unset;
+    grid-template-columns: 2fr;
+    padding: 20px;
+  }
+  .otherTexts > h2 {
+    font-size: 30px;
+  }
+  .aboutImage {
     width: 100%;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);
-}
-.otherTexts > h2{
-    font-size: 40px;
-    font-weight: 800;
-    color: #000000;
-    margin-bottom: 20px;
-}
-.otherTexts > p{
-    font-size: 16px;
-    line-height: 1.6;
-    color: #0c0c0c;
-    margin-bottom: 20px;
-}
-
-.joinButton{
-    background-color: #3a4a3f;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: unset;
-    border: none;
-    transition: all 0.3s ease-in-out;
+    height: 100%;
+  }
+  .joinButton {
+    width: 100%;
+    text-align: center;
+  }
 }

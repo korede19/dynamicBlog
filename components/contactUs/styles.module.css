@@ -1,0 +1,26 @@
+.aboutHeader {
+  padding: 180px 0px 80px 0px;
+  background-color: #f5f5f5;
+  text-align: center;
+}
+
+.aboutHeader h1 {
+  font-size: 50px;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 10px;
+}
+
+.aboutBody {
+  max-width: 1200px;
+  margin: auto;
+  padding: 80px 0px 40px 0px;
+  display: grid;
+  grid-template-columns: 2fr 2fr;
+}
+
+.aboutImage {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}

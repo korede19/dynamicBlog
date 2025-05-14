@@ -13,9 +13,9 @@ const AboutComponent = () => {
     <div>
       <div className={styles.aboutHeader}>
         <h1>
-          About us
+          About Us
         </h1>
-        <p>About Us/ <span><Link href="/">Home</Link></span></p> 
+        <p>About Us / <span><Link href="/">Home</Link></span></p> 
       </div>
       <div className={styles.aboutBody}>
         <p>

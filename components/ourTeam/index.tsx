@@ -13,13 +13,13 @@ const OurTeam = () => {
           content.
         </p>
         <div className={style.boxRow}>
-          {ourTeam.map((index, item) => {
+          {ourTeam.map((item, index) => {
             return (
-              <div key={item} className={style.offerBox}>
-                <div className={style.offerIcon}>{index.icon}</div>
+              <div key={index} className={style.offerBox}>
+                <div className={style.offerIcon}>{item.icon}</div>
                 <div className={style.offerText}>
-                  <h3>{index.title}</h3>
-                  <p>{index.text}</p>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
                 </div>
               </div>
             );
