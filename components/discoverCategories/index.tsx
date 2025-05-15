@@ -3,6 +3,7 @@ import styles from "./styles.module.css";
 import { categories } from "@/utils/data";
 import Image from "next/image";
 import Plus from "@/svg/plus";
+import Link from "next/link";
 
 const DiscoverCategories = () => {
   return (
@@ -19,10 +20,10 @@ const DiscoverCategories = () => {
                 width={400}
                 height={400}
               />
-              <div className={styles.categoryOverlay}>
+              <Link href={item.link} className={styles.categoryOverlay}>
                 <h3>{item.name}</h3>
                 <Plus />
-              </div>
+              </Link>
             </div>
           );
         })}

@@ -204,11 +204,11 @@ const AllPosts = ({ categoryIds, categoryNames = {} }: AllPostsProps) => {
         </button>
       </div>
 
-      <div className={styles.viewAllContainer}>
+      {/* <div className={styles.viewAllContainer}>
         <Link href="/blog/posts" className={styles.viewAllButton}>
           View All Posts
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };

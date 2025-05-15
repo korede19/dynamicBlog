@@ -8,7 +8,6 @@ import Nutrition from "@/svg/nutrition";
 import Science from "@/svg/science";
 import SupportTeam from "@/svg/supportTeam";
 import Workout from "@/svg/workout";
-import { title } from "process";
 
 export const menuLinks = [
   {
@@ -34,16 +33,19 @@ export const categories = [
     id: "category1",
     name: "Fitness",
     image: "/assets/fitness (2).jpg",
+    link: "/blog/posts?category=category1",
   },
   {
     id: "category2",
     name: "Nutrition",
     image: "/assets/nutrition.jpg",
+    link: "/blog/posts?category=category2",
   },
   {
     id: "category2",
     name: "Health & Wellness",
     image: "/assets/health-wellness.jpg",
+    link: "/blog/posts?category=category3",
   },
 ];
 

@@ -35,7 +35,6 @@ const formatDate = (dateValue: Date | FirestoreTimestamp | undefined) => {
   let date: Date;
 
   try {
-    // Check if it's a Firestore timestamp (has toDate method)
     if (dateValue && typeof dateValue === "object" && "toDate" in dateValue) {
       date = dateValue.toDate();
     } else {
@@ -62,6 +61,21 @@ const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string | null>(null);
+  const [currentPath, setCurrentPath] = useState<string>("");
+
+  // Get the current path and category filter from URL
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Get current path without query parameters
+      const path = window.location.pathname;
+      setCurrentPath(path);
+
+      // Get category from query params
+      const urlParams = new URLSearchParams(window.location.search);
+      const categoryParam = urlParams.get("category");
+      setFilter(categoryParam);
+    }
+  }, []);
 
   useEffect(() => {
     const getAllPosts = async () => {
@@ -119,22 +133,30 @@ const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
 
       {categoryNames && Object.keys(categoryNames).length > 0 && (
         <div className={styles.categoryFilters}>
-          <button
+          <a
+            href={currentPath}
             className={`${styles.filterButton} ${!filter ? styles.active : ""}`}
-            onClick={() => setFilter(null)}
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = currentPath;
+            }}
           >
             All
-          </button>
+          </a>
           {Object.entries(categoryNames).map(([id, name]) => (
-            <button
+            <a
               key={id}
+              href={`${currentPath}?category=${id}`}
               className={`${styles.filterButton} ${
                 filter === id ? styles.active : ""
               }`}
-              onClick={() => setFilter(id)}
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = `${currentPath}?category=${id}`;
+              }}
             >
               {name}
-            </button>
+            </a>
           ))}
         </div>
       )}

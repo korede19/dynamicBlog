@@ -17,7 +17,7 @@
   width: 1200px;
   margin: 0px auto;
   display: grid;
-  grid-template-columns: 2fr 2fr 2fr ;
+  grid-template-columns: 2fr 2fr 2fr;
   box-sizing: border-box;
   gap: 20px;
   border-radius: 20px;
@@ -45,6 +45,7 @@
   font-size: 20px;
   padding: 10px;
   border-radius: 0px 0px 10px 10px;
+  text-decoration: none;
 }
 
 .categoryOverlay h3 {
@@ -54,17 +55,15 @@
   cursor: pointer;
 }
 
-
 @media screen and (max-width: 768px) {
-  .sectionContainer{
+  .sectionContainer {
     width: 100%;
     padding: 20px 20px;
   }
- .sectionContain{
+  .sectionContain {
     grid-template-columns: 2fr;
     width: 100%;
     margin: 0px auto;
     padding: 0px;
- } 
-  
+  }
 }

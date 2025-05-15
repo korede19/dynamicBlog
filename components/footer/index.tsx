@@ -105,13 +105,15 @@ const Footer = () => {
             <h3 className={styles.footerHeading}>Categories</h3>
             <ul className={styles.footerLinks}>
               <li>
-                <Link href="/blog/posts">All Categories</Link>
+                <Link href="/blog/posts?category=category1">Fitness</Link>
               </li>
               <li>
-                <Link href="/blog/posts">Fitness</Link>
+                <Link href="//blog/posts?category=category2">Nutrition</Link>
               </li>
               <li>
-                <Link href="/blog/posts">Nutrition</Link>
+                <Link href="//blog/posts?category=category3">
+                  Health & Wellness
+                </Link>
               </li>
             </ul>
           </div>

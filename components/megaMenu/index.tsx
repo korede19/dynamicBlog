@@ -16,8 +16,9 @@ const MegaMenu: React.FC<HeaderProps> = ({
   navItems = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
-    { name: "Posts", href: "/blog/posts" },
-    { name: "Contact", href: "/contact" },
+    { name: "Fitness", href: "/blog/posts?category=category1" },
+    { name: "Nutrition", href: "/blog/posts?category=category2" },
+    { name: "Health & Wellness", href: "/blog/posts?category=category2" },
   ],
 }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -143,8 +144,8 @@ const MegaMenu: React.FC<HeaderProps> = ({
           </div>
 
           {/* Login Button */}
-          <Link href="/admin/login" className={styles.loginButton}>
-            Login
+          <Link href="/contact" className={styles.loginButton}>
+            Contact
           </Link>
 
           {/* Mobile Menu Button */}
@@ -189,11 +190,11 @@ const MegaMenu: React.FC<HeaderProps> = ({
           </ul>
         </nav>
         <Link
-          href="/login"
+          href="/Contact"
           className={styles.mobileLoginButton}
           onClick={() => setMobileMenuOpen(false)}
         >
-          Login
+          Contact
         </Link>
       </div>
     </header>
