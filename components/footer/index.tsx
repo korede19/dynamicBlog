@@ -15,8 +15,8 @@ const Footer = () => {
               <Image
                 src="/assets/newLogo.png"
                 alt="Blog Logo"
-                width={120}
-                height={100}
+                width={100}
+                height={80}
                 className={styles.logoImage}
               />
             </div>
@@ -127,12 +127,12 @@ const Footer = () => {
               <li>
                 <Link href="/contact">Contact</Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/privacy-policy">Privacy Policy</Link>
               </li>
               <li>
                 <Link href="/terms-of-service">Terms of Service</Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
