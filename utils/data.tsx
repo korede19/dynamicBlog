@@ -42,7 +42,7 @@ export const categories = [
     link: "/blog/posts?category=category2",
   },
   {
-    id: "category2",
+    id: "category3",
     name: "Health & Wellness",
     image: "/assets/health-wellness.jpg",
     link: "/blog/posts?category=category3",

@@ -3,7 +3,7 @@ import styles from "./styles.module.css";
 import Link from "next/link";
 import ContactForm from "../contactForm";
 import Gmail from "@/svg/mail";
-import Phone from "@/svg/phonee";
+// import Phone from "@/svg/phonee";
 
 const ContactComp = () => {
   return (
@@ -28,15 +28,15 @@ const ContactComp = () => {
           <br />
           <br />
           <div className={styles.contactDetails}>
-            <div className={styles.phoneNo}>
+            {/* <div className={styles.phoneNo}>
               <Phone />
               <h2>Phone Number</h2>
               <p>+234 00 000 000 00</p>
-            </div>
+            </div> */}
             <div className={styles.email}>
               <Gmail />
               <h2>Email</h2>
-              <p>nfo@peakpurzuit.com</p>
+              <p>info@peakpurzuit.com</p>
             </div>
           </div>
         </div>

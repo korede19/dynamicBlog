@@ -63,14 +63,11 @@ const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
   const [filter, setFilter] = useState<string | null>(null);
   const [currentPath, setCurrentPath] = useState<string>("");
 
-  // Get the current path and category filter from URL
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // Get current path without query parameters
       const path = window.location.pathname;
       setCurrentPath(path);
 
-      // Get category from query params
       const urlParams = new URLSearchParams(window.location.search);
       const categoryParam = urlParams.get("category");
       setFilter(categoryParam);
@@ -83,9 +80,7 @@ const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
         setLoading(true);
         const allPosts = await fetchAllPosts();
 
-        // Check if allPosts is an array before sorting
         if (Array.isArray(allPosts) && allPosts.length > 0) {
-          // Sort by date (newest first)
           allPosts.sort((a, b) => {
             try {
               const dateA =

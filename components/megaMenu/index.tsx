@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import styles from "./styles.module.css";
 
 interface HeaderProps {
@@ -18,13 +19,14 @@ const MegaMenu: React.FC<HeaderProps> = ({
     { name: "About", href: "/about" },
     { name: "Fitness", href: "/blog/posts?category=category1" },
     { name: "Nutrition", href: "/blog/posts?category=category2" },
-    { name: "Health & Wellness", href: "/blog/posts?category=category2" },
+    { name: "Health & Wellness", href: "/blog/posts?category=category3" },
   ],
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,6 +56,18 @@ const MegaMenu: React.FC<HeaderProps> = ({
     };
   }, [mobileMenuOpen]);
 
+  const handleNavigation = (href: string, e: React.MouseEvent) => {
+    e.preventDefault();
+
+    // Close mobile menu if open
+    setMobileMenuOpen(false);
+
+    // Force a fresh navigation for all links
+    if (href) {
+      router.push(href, { scroll: true });
+    }
+  };
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Search query:", searchQuery);
@@ -65,7 +79,6 @@ const MegaMenu: React.FC<HeaderProps> = ({
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
       <div className={styles.headerContainer}>
         <Link href="/">
-          {" "}
           <Image
             src="/assets/newLogo.png"
             alt="Logo"
@@ -81,7 +94,11 @@ const MegaMenu: React.FC<HeaderProps> = ({
           <ul className={styles.navList}>
             {navItems.map((item) => (
               <li key={item.name} className={styles.navItem}>
-                <Link href={item.href} className={styles.navLink}>
+                <Link
+                  href={item.href}
+                  className={styles.navLink}
+                  onClick={(e) => handleNavigation(item.href, e)}
+                >
                   {item.name}
                 </Link>
               </li>
@@ -181,7 +198,7 @@ const MegaMenu: React.FC<HeaderProps> = ({
                 <Link
                   href={item.href}
                   className={styles.mobileNavLink}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => handleNavigation(item.href, e)}
                 >
                   {item.name}
                 </Link>

@@ -6,7 +6,6 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "swiper/css/autoplay";
 import Link from "next/link";
 import { fetchPostsByCategory } from "../../lib/firestore";
 import styles from "./styles.module.css";
@@ -38,27 +37,23 @@ const stripHtmlTags = (html: string) => {
 
 const formatDate = (dateValue: Date | FirestoreTimestamp) => {
   if (!dateValue) return "No date";
-  
+
   let date: Date;
-  
-  // Check if it's a Firestore timestamp (has toDate method)
-  if ('toDate' in dateValue) {
+
+  if ("toDate" in dateValue) {
     date = dateValue.toDate();
-  } 
-  // Check if it's already a Date object
-  else {
+  } else {
     date = dateValue as Date;
   }
-  
-  // Check if the date is valid
+
   if (isNaN(date.getTime())) {
     return "Invalid date";
   }
-  
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
 };
 
@@ -69,7 +64,7 @@ const CategorySlider = ({ categoryId, categoryName }: CategorySliderProps) => {
   useEffect(() => {
     const loadPosts = async () => {
       if (!categoryId) return;
-      
+
       setLoading(true);
       try {
         const fetchedPosts = await fetchPostsByCategory(categoryId);
@@ -86,17 +81,27 @@ const CategorySlider = ({ categoryId, categoryName }: CategorySliderProps) => {
   }, [categoryId]);
 
   return (
-    <div className={styles.sliderContainer}>      
+    <div className={styles.sliderContainer}>
       {loading ? (
         <div className={styles.sliderContain}>
-          {/* Replace text loading with skeleton loader */}
           <Swiper
-            modules={[Navigation, Pagination]}
+            modules={[Navigation, Pagination, Autoplay]}
             spaceBetween={30}
             slidesPerView={1}
             navigation={false}
             pagination={{ clickable: true }}
+            autoplay={{
+              delay: 2000,
+              disableOnInteraction: false,
+            }}
+            loop={false}
           >
+            <SwiperSlide>
+              <SkeletonLoader type="slide" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <SkeletonLoader type="slide" />
+            </SwiperSlide>
             <SwiperSlide>
               <SkeletonLoader type="slide" />
             </SwiperSlide>
@@ -106,64 +111,71 @@ const CategorySlider = ({ categoryId, categoryName }: CategorySliderProps) => {
         <div className={styles.noPosts}>No posts found for this category</div>
       ) : (
         <div className={styles.sliderContain}>
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={30}
-          slidesPerView={1}
-          navigation
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 5000 }}
-          loop={posts.length > 10}
-          breakpoints={{
-            320: {
-              slidesPerView: 1,
-              spaceBetween: 20
-            },
-            640: {
-              slidesPerView: 1,
-              spaceBetween: 20
-            },
-            1024: {
-              slidesPerView: 1,
-              spaceBetween: 30
-            }
-          }}
-        >
-          {posts.map((post) => (
-            <SwiperSlide key={post.id}>
-              <div 
-                className={styles.slide}
-                style={{ 
-                  backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url(${post.imageUrl})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              >
-                <div className={styles.postMeta}>
-                  <span className={styles.category}>{categoryName}</span>
-                  <span className={styles.date}>{formatDate(post.createdAt)}</span>
-                </div>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  passHref
-                  className={styles.blogLink}
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            spaceBetween={30}
+            slidesPerView={1}
+            navigation
+            pagination={{ clickable: true }}
+            autoplay={{
+              delay: 4000, // Slightly longer delay for reading
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            loop={posts.length > 1}
+            speed={800}
+            breakpoints={{
+              320: {
+                slidesPerView: 1,
+                spaceBetween: 20,
+              },
+              640: {
+                slidesPerView: 1,
+                spaceBetween: 20,
+              },
+              1024: {
+                slidesPerView: 1,
+                spaceBetween: 30,
+              },
+            }}
+          >
+            {posts.map((post) => (
+              <SwiperSlide key={post.id}>
+                <div
+                  className={styles.slide}
+                  style={{
+                    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url(${post.imageUrl})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
                 >
-                  <h3 className={styles.title}>{post.title}</h3>
-                </Link>
-                <div className={styles.postContent}>
-                  <p>{stripHtmlTags(post.content.slice(0, 350))}...</p>
+                  <div className={styles.postMeta}>
+                    <span className={styles.category}>{categoryName}</span>
+                    <span className={styles.date}>
+                      {formatDate(post.createdAt)}
+                    </span>
+                  </div>
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    passHref
+                    className={styles.blogLink}
+                  >
+                    <h3 className={styles.title}>{post.title}</h3>
+                  </Link>
+                  <div className={styles.postContent}>
+                    <p>{stripHtmlTags(post.content.slice(0, 350))}...</p>
+                  </div>
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    passHref
+                    className={styles.readMore}
+                  >
+                    Read More
+                  </Link>
                 </div>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  passHref
-                  className={styles.readMore}
-                >
-                  Read More
-                </Link>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       )}
     </div>

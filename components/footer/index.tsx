@@ -165,7 +165,7 @@ const Footer = () => {
 
         <div className={styles.footerBottom}>
           <p className={styles.copyright}>
-            © {currentYear} Your Blog Name. All rights reserved.
+            © {currentYear} PeakPurzuit. All rights reserved.
           </p>
           <div className={styles.footerBottomLinks}>
             <Link href="/privacy-policy">Privacy</Link>

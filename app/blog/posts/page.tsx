@@ -4,7 +4,6 @@ import React from "react";
 // import { useSearchParams } from "next/navigation"; // Import for Next.js App Router
 
 const AllPagePosts = () => {
-  // Define your category mapping
   const categoryNames = {
     category1: "Fitness",
     category2: "Nutrition",
