@@ -62,7 +62,15 @@ const MegaMenu: React.FC<HeaderProps> = ({
     // Close mobile menu if open
     setMobileMenuOpen(false);
 
-    // Force a fresh navigation for all links
+    // For blog category links, use router.replace to ensure query params work
+    if (href.includes("/blog/posts?category=")) {
+      // Parse the URL to handle query parameters properly
+      const url = new URL(href, window.location.origin);
+      router.replace(url.pathname + url.search);
+      return;
+    }
+
+    // For other links, use router.push
     if (href) {
       router.push(href, { scroll: true });
     }
@@ -207,7 +215,7 @@ const MegaMenu: React.FC<HeaderProps> = ({
           </ul>
         </nav>
         <Link
-          href="/Contact"
+          href="/contact"
           className={styles.mobileLoginButton}
           onClick={() => setMobileMenuOpen(false)}
         >

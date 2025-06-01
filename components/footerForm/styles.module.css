@@ -1,0 +1,56 @@
+.subscribeText {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #ffffff;
+  margin-bottom: 1.25rem;
+}
+
+.subscribeForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.subscribeInput {
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.681);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 0.95rem;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.subscribeInput::placeholder {
+  color: #e3e3e3;
+}
+
+.subscribeInput:focus {
+  outline: none;
+  border-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.subscribeButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  background-color: #eae2d3;
+  color: 3a4a3f;
+  font-weight: 500;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.subscribeButton:hover {
+  background-color: #c8c0b1;
+}
+
+.subscribeDisclaimer {
+  font-size: 0.8rem;
+  color: #fefefe;
+  line-height: 1.5;
+}
