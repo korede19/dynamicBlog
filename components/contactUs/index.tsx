@@ -9,9 +9,9 @@ const ContactComp = () => {
   return (
     <div>
       <div className={styles.aboutHeader}>
-        <h1>Contact Us</h1>
+        <h1>Contact us</h1>
         <p>
-          Contact Us /{" "}
+          Contact us /{" "}
           <span>
             <Link href="/">Home</Link>
           </span>

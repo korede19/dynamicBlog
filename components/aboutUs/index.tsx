@@ -12,9 +12,9 @@ const AboutComponent = () => {
   return (
     <div>
       <div className={styles.aboutHeader}>
-        <h1>About Us</h1>
+        <h1>About us</h1>
         <p>
-          About Us /{" "}
+          About us /{" "}
           <span>
             <Link href="/">Home</Link>
           </span>
