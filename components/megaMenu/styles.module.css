@@ -325,8 +325,8 @@
   display: block;
   width: 100%;
   max-width: 300px;
-  background-color: #4f7a5d;
-  color: white;
+  background-color: #ffffff;
+  color: #3a4a3f;
   padding: 0.75rem;
   border-radius: 6px;
   font-weight: 600;
@@ -337,6 +337,7 @@
 
 .mobileLoginButton:hover {
   background-color: #548063;
+  color: #ffffff;
 }
 
 /* Media Queries */

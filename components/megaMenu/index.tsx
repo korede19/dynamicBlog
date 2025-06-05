@@ -56,17 +56,16 @@ const MegaMenu: React.FC<HeaderProps> = ({
     };
   }, [mobileMenuOpen]);
 
-  const handleNavigation = (href: string, e: React.MouseEvent) => {
+  // Most reliable fix - force navigation for all blog categories
+  const handleNavigationReliable = (href: string, e: React.MouseEvent) => {
     e.preventDefault();
 
     // Close mobile menu if open
     setMobileMenuOpen(false);
 
-    // For blog category links, use router.replace to ensure query params work
     if (href.includes("/blog/posts?category=")) {
-      // Parse the URL to handle query parameters properly
-      const url = new URL(href, window.location.origin);
-      router.replace(url.pathname + url.search);
+      // For blog category links, always force a full page navigation
+      window.location.href = href;
       return;
     }
 
@@ -105,7 +104,7 @@ const MegaMenu: React.FC<HeaderProps> = ({
                 <Link
                   href={item.href}
                   className={styles.navLink}
-                  onClick={(e) => handleNavigation(item.href, e)}
+                  onClick={(e) => handleNavigationReliable(item.href, e)}
                 >
                   {item.name}
                 </Link>
@@ -206,7 +205,7 @@ const MegaMenu: React.FC<HeaderProps> = ({
                 <Link
                   href={item.href}
                   className={styles.mobileNavLink}
-                  onClick={(e) => handleNavigation(item.href, e)}
+                  onClick={(e) => handleNavigationReliable(item.href, e)}
                 >
                   {item.name}
                 </Link>

@@ -77,3 +77,11 @@
   font-weight: 400;
   color: #000000;
 }
+
+@media screen and (max-width: 768px) {
+  .aboutBody {
+    grid-template-columns: 1fr;
+    padding: 40px 20px;
+    gap: 40px;
+  }
+}
