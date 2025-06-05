@@ -13,7 +13,7 @@
 
 .logoImage {
   width: 70%;
-  height: 70%;
+  height: auto;
 }
 
 .footerTop {
@@ -29,6 +29,14 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+  .logoImage {
+    height: auto;
+    width: 40%;
+    box-sizing: border-box;
+  }
+}
+
 @media (max-width: 640px) {
   .footerTop {
     grid-template-columns: 1fr;
@@ -39,12 +47,6 @@
 .footerColumn {
   display: flex;
   flex-direction: column;
-}
-
-.logoImage {
-  height: auto;
-  width: 40%;
-  box-sizing: border-box;
 }
 
 .footerDescription {
