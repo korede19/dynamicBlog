@@ -54,3 +54,8 @@
   color: #fefefe;
   line-height: 1.5;
 }
+
+.nameGroup{
+  display: flex;
+  gap: 0.5rem;
+}

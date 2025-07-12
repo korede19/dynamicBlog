@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Encode_Sans_Condensed, Lato } from "next/font/google";
 import "./globals.css";
 import MegaMenu from "@/components/megaMenu";
+import Analytics from "@/components/analytics";
 
 const encodeSans = Encode_Sans_Condensed({ 
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="en" className={`${encodeSans.variable} ${lato.variable}`}>
       <body className={encodeSans.className}>
         <MegaMenu />
+        <Analytics />
         <main>
           {children}
         </main>

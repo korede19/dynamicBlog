@@ -1,22 +1,31 @@
 "use client";
-import { useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import styles from "./styles.module.css";
 
-// Replace this with your actual Google Apps Script Web App URL
 const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL as string;
 
 type SubmissionStatus = "idle" | "loading" | "success" | "error";
 
 export default function FooterSubscribe() {
+  const [mounted, setMounted] = useState(false);
+
+  // Hydration-safe rendering
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<SubmissionStatus>("idle");
   const [message, setMessage] = useState<string>("");
 
+  if (!mounted) return null; // prevent SSR mismatch
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Basic email validation
-    if (!email || !email.includes("@")) {
+    if (!email.includes("@")) {
       setStatus("error");
       setMessage("Please enter a valid email address.");
       return;
@@ -28,25 +37,26 @@ export default function FooterSubscribe() {
     try {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        mode: "no-cors", // Important for Google Apps Script
+        mode: "no-cors",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
           email: email.trim(),
           timestamp: new Date().toISOString(),
         }).toString(),
       });
 
-      // With no-cors mode, we can't read the response
-      // So we assume success if no error is thrown
       setStatus("success");
       setMessage(
         "Thank you for subscribing! You'll receive our latest updates."
       );
+      setFirstName("");
+      setLastName("");
       setEmail("");
 
-      // Reset status after 5 seconds
       setTimeout(() => {
         setStatus("idle");
         setMessage("");
@@ -55,8 +65,6 @@ export default function FooterSubscribe() {
       console.error("Subscription error:", error);
       setStatus("error");
       setMessage("Failed to subscribe. Please try again later.");
-
-      // Reset error after 5 seconds
       setTimeout(() => {
         setStatus("idle");
         setMessage("");
@@ -85,15 +93,37 @@ export default function FooterSubscribe() {
       </p>
 
       <form className={styles.subscribeForm} onSubmit={handleSubmit}>
+        <div className={styles.nameGroup}>
+          <input
+            type="text"
+            placeholder="First Name"
+            className={styles.subscribeInput}
+            aria-label="First Name"
+            value={firstName || ""}
+            onChange={(e) => setFirstName(e.target.value)}
+            disabled={status === "loading"}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            className={styles.subscribeInput}
+            aria-label="Last Name"
+            value={lastName || ""}
+            onChange={(e) => setLastName(e.target.value)}
+            disabled={status === "loading"}
+            required
+          />
+        </div>
         <input
           type="email"
           placeholder="Your email address"
           className={styles.subscribeInput}
           aria-label="Email address"
-          required
-          value={email}
+          value={email || ""}
           onChange={(e) => setEmail(e.target.value)}
           disabled={status === "loading"}
+          required
         />
         <button
           type="submit"
