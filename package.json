@@ -7,9 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen-sitemap-config": "tsup next-sitemap.config.ts --format cjs --out-dir . --out-extension:.cjs",
-    "sitemap": "yarn gen-sitemap-config && yarn next-sitemap",
-    "postbuild": "yarn sitemap",
+    "sitemap": "next-sitemap",
+    "postbuild": "next-sitemap",
     "next-sitemap": "next-sitemap"
   },
   "dependencies": {

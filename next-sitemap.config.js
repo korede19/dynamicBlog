@@ -1,15 +1,16 @@
-// next-sitemap.config.js
-
 /** @type {import('next-sitemap').IConfig} */
-module.exports = {
-  siteUrl: 'https://peakpurzuit.com', 
-  generateRobotsTxt: true,           
+const config = {
+  siteUrl: 'https://peakpurzuit.com',
+  generateRobotsTxt: true,
+  generateIndexSitemap: true,
+  sitemapSize: 7000,
+  changefreq: 'weekly',
+  priority: 0.7,
   exclude: [
     '/admin/create-post',
     '/admin/login',
-    '/admin/posts/edit/*',
-    '/blog/*',
     '/api/email',
+    '/blog/*',
   ],
   robotsTxtOptions: {
     policies: [
@@ -17,10 +18,14 @@ module.exports = {
         userAgent: '*',
         allow: '/',
         disallow: [
-          '/admin/',
-          '/api/',
+          '/admin/create-post',
+          '/admin/login',
+          '/api/email',
+          '/blog/',
         ],
       },
     ],
   },
-}
+};
+
+module.exports = config;
