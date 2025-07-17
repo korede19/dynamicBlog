@@ -1,7 +1,4 @@
-// next-sitemap.config.ts
-import type { IConfig } from 'next-sitemap';
-
-const config: IConfig = {
+const config = {
   siteUrl: 'https://peakpurzuit.com',
   generateRobotsTxt: true,
   generateIndexSitemap: true,
@@ -12,7 +9,7 @@ const config: IConfig = {
     '/admin/create-post',
     '/admin/login',
     '/api/email',
-    '/blog/*', // exclude all blog slugs like /blog/some-title
+    '/blog/**', // match dynamic routes like /blog/[slug]
   ],
   robotsTxtOptions: {
     policies: [
@@ -23,7 +20,7 @@ const config: IConfig = {
           '/admin/create-post',
           '/admin/login',
           '/api/email',
-          '/blog/', // or '/blog/*'
+          '/blog/', // optional: can also use /blog/**
         ],
       },
     ],
