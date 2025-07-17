@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen-sitemap-config": "tsup next-sitemap.config.ts --format cjs --out-dir . --out-extension:cjs=.cjs",
+    "gen-sitemap-config": "tsup next-sitemap.config.ts --format cjs --out-dir . --out-extension:.cjs",
     "sitemap": "yarn gen-sitemap-config && yarn next-sitemap",
-    "postbuild": "yarn gen-sitemap-config && yarn next-sitemap",
+    "postbuild": "yarn sitemap",
     "next-sitemap": "next-sitemap"
   },
   "dependencies": {
@@ -32,14 +32,13 @@
     "swiper": "^11.2.5"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
+    "@eslint/eslintrc": "^3.0.0",
+    "@types/node": "^20.0.0",
     "@types/nodemailer": "^6.4.17",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "next-sitemap": "next-sitemap",
-    "postbuild": "yarn gen-sitemap-config && yarn next-sitemap",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   }
 }
