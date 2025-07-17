@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "gen-sitemap-config": "tsup next-sitemap.config.ts --format cjs --out-dir . --out-extension:.cjs=.cjs",
+    "postbuild": "yarn gen-sitemap-config && yarn next-sitemap",
+    "next-sitemap": "next-sitemap"
   },
   "dependencies": {
     "@tiptap/extension-image": "^2.11.5",
@@ -20,6 +23,7 @@
     "firebase-admin": "^13.1.0",
     "lucide-react": "^0.475.0",
     "next": "15.1.7",
+    "next-sitemap": "^4.2.3",
     "nodemailer": "^6.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -33,7 +37,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.1.7",
-    "typescript": "^5"
+    "postbuild": "yarn gen-sitemap-config && yarn next-sitemap",
+    "next-sitemap": "next-sitemap"
   }
 }
