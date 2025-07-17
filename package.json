@@ -38,7 +38,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
+    "next-sitemap": "next-sitemap",
     "postbuild": "yarn gen-sitemap-config && yarn next-sitemap",
-    "next-sitemap": "next-sitemap"
+    "typescript": "^5.8.3"
   }
 }
