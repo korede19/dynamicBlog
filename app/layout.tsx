@@ -47,6 +47,15 @@ export default function RootLayout({
         <main>
           {children}
         </main>
+        <Script id="infolinks-config" strategy="beforeInteractive">
+          {`var infolinks_pid = 3438518; var infolinks_wsid = 0;`}
+        </Script>
+
+        {/* Infolinks loader script */}
+        <Script
+          src="//resources.infolinks.com/js/infolinks_main.js"
+          strategy="beforeInteractive"
+        />
       </body>
     </html>
   );
