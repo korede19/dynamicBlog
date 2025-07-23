@@ -120,7 +120,6 @@ const MenuBar = ({
         </button>
       </div>
 
-      {/* Clear */}
       <div className={styles.toolSection}>
         <button type="button"
           onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()}
