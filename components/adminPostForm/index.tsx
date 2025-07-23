@@ -7,12 +7,13 @@ import PostFormFields from "@/components/postFormField";
 import PostEditor from "@/components/postEditor";
 import Footer from "../footer";
 
-// Cloudinary configuration
+// Cloudinary config
 const CLOUDINARY_UPLOAD_PRESET =
   process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "";
 const CLOUDINARY_CLOUD_NAME =
   process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "";
 
+// Types
 interface BlogPost {
   title: string;
   categoryId: string;
@@ -27,11 +28,19 @@ interface CloudinaryResponse {
   secure_url: string;
 }
 
+interface FormDataType {
+  title: string;
+  categoryId: string;
+  imageUrl: string;
+  tagsInput: string;
+  content: string;
+}
+
 const AdminPostForm = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     title: "",
     categoryId: "",
     imageUrl: "",
@@ -39,66 +48,49 @@ const AdminPostForm = () => {
     content: "",
   });
 
-  // Handle image upload to Cloudinary
+  // Upload image to Cloudinary
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    console.log("Attempting upload with:", {
-      cloudName: CLOUDINARY_CLOUD_NAME,
-      uploadPreset: CLOUDINARY_UPLOAD_PRESET,
-      fileSize: file.size,
-      fileType: file.type,
-    });
-
     if (!CLOUDINARY_UPLOAD_PRESET || !CLOUDINARY_CLOUD_NAME) {
-      console.error("Cloudinary configuration missing");
-      alert(
-        "Image upload is not configured properly. Please check your environment variables."
-      );
+      alert("Cloudinary config is missing.");
       return;
     }
 
     try {
       setUploadingImage(true);
 
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+      const data = new FormData();
+      data.append("file", file);
+      data.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
-      const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
-      console.log("Uploading to:", uploadUrl);
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: data,
+        }
+      );
 
-      const response = await fetch(uploadUrl, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Image upload failed: ${response.status} ${response.statusText}. Response: ${errorText}`
-        );
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Upload failed: ${res.status} ${errorText}`);
       }
 
-      const data: CloudinaryResponse = await response.json();
-      console.log("Upload successful:", data);
-
-      // Update the form data with the new image URL
-      setFormData((prev) => ({ ...prev, imageUrl: data.secure_url }));
-    } catch (error) {
-      console.error("Detailed upload error:", error);
-      if (error instanceof Error) {
-        alert(`Failed to upload image: ${error.message}`);
-      } else {
-        alert("Failed to upload image. Please try again.");
-      }
+      const json: CloudinaryResponse = await res.json();
+      setFormData((prev: FormDataType) => ({
+        ...prev,
+        imageUrl: json.secure_url,
+      }));
+    } catch (error: any) {
+      alert(`Image upload failed: ${error.message}`);
     } finally {
       setUploadingImage(false);
     }
   };
 
-  // Handle form submission
+ 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -111,8 +103,8 @@ const AdminPostForm = () => {
 
       const tagsArray = formData.tagsInput
         .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag);
+        .map((tag: string) => tag.trim())
+        .filter((tag: string) => tag);
 
       const postData: BlogPost = {
         title: formData.title,
@@ -130,7 +122,7 @@ const AdminPostForm = () => {
 
       await createBlogPost(postData);
       alert("Post created successfully!");
-      router.push("/admin/posts"); // Make sure this path matches your file structure
+      router.push("/admin/posts");
     } catch (error) {
       console.error("Error creating post:", error);
       alert("Failed to create post. Please try again.");
@@ -150,23 +142,35 @@ const AdminPostForm = () => {
             formData={formData}
             uploadingImage={uploadingImage}
             onTitleChange={(e) =>
-              setFormData((prev) => ({ ...prev, title: e.target.value }))
+              setFormData((prev: FormDataType) => ({
+                ...prev,
+                title: e.target.value,
+              }))
             }
             onCategoryChange={(e) =>
-              setFormData((prev) => ({ ...prev, categoryId: e.target.value }))
+              setFormData((prev: FormDataType) => ({
+                ...prev,
+                categoryId: e.target.value,
+              }))
             }
             onTagsChange={(e) =>
-              setFormData((prev) => ({ ...prev, tagsInput: e.target.value }))
+              setFormData((prev: FormDataType) => ({
+                ...prev,
+                tagsInput: e.target.value,
+              }))
             }
             onImageUpload={handleImageUpload}
             onRemoveImage={() =>
-              setFormData((prev) => ({ ...prev, imageUrl: "" }))
+              setFormData((prev: FormDataType) => ({
+                ...prev,
+                imageUrl: "",
+              }))
             }
           />
           <PostEditor
             content={formData.content}
-            onContentChange={(content) =>
-              setFormData((prev) => ({ ...prev, content }))
+            onContentChange={(content: string) =>
+              setFormData((prev: FormDataType) => ({ ...prev, content }))
             }
           />
           <div className={styles.formFooter}>

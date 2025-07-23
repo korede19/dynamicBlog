@@ -4,9 +4,13 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import { TextAlign } from "@tiptap/extension-text-align";
-import MenuBar from "../menuBar";
 import Image from "@tiptap/extension-image";
+import MenuBar from "../menuBar";
 import styles from "./styles.module.css";
+
+
+const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "";
+const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "";
 
 interface PostEditorProps {
   content: string;
@@ -23,19 +27,18 @@ const PostEditor: React.FC<PostEditorProps> = ({ content, onContentChange }) => 
       Image.configure({
         inline: true,
         HTMLAttributes: {
-          class: "h-48 w-auto",
+          class: "h-auto max-w-full rounded-lg my-4",
         },
       }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: "text-blue-500 hover:underline",
+          class: "text-blue-600 underline",
         },
       }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
         alignments: ["left", "center", "right", "justify"],
-        defaultAlignment: "left",
       }),
     ],
     content,
@@ -45,46 +48,50 @@ const PostEditor: React.FC<PostEditorProps> = ({ content, onContentChange }) => 
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl m-5 focus:outline-none",
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl m-4 focus:outline-none",
       },
     },
   });
 
-  const handleImageUpload = async () => {
-    if (!editor) {
-      return Promise.resolve('');
-    }
-    
-    fileInputRef.current?.click();
-    return new Promise<string>((resolve) => {
-      const handleFileChange = (event: Event) => {
-        const input = event.target as HTMLInputElement;
-        const file = input.files?.[0];
-        
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const imageUrl = e.target?.result as string;
-            editor.chain().focus().insertContent({
-              type: 'image',
-              attrs: { src: imageUrl }
-            }).run();
-            
-            resolve(imageUrl);
-            if (fileInputRef.current) {
-              fileInputRef.current.value = '';
+  const handleImageUpload = async (): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      if (!fileInputRef.current) return resolve("");
+
+      fileInputRef.current.onchange = async () => {
+        const file = fileInputRef.current?.files?.[0];
+        if (!file) return resolve("");
+
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+          const res = await fetch(
+            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+            {
+              method: "POST",
+              body: formData,
             }
-            
-            // Remove the one-time event listener
-            fileInputRef.current?.removeEventListener('change', handleFileChange);
-          };
-          reader.readAsDataURL(file);
-        } else {
-          resolve('');
-          fileInputRef.current?.removeEventListener('change', handleFileChange);
+          );
+
+          if (!res.ok) throw new Error("Upload failed");
+
+          const data = await res.json();
+          const imageUrl = data.secure_url;
+
+          // Insert image into the editor
+          editor?.chain().focus().setImage({ src: imageUrl }).run();
+
+          resolve(imageUrl);
+        } catch (err) {
+          console.error("Image upload error:", err);
+          reject(err);
+        } finally {
+          if (fileInputRef.current) fileInputRef.current.value = "";
         }
       };
-      fileInputRef.current?.addEventListener('change', handleFileChange);
+
+      fileInputRef.current.click();
     });
   };
 
@@ -98,13 +105,13 @@ const PostEditor: React.FC<PostEditorProps> = ({ content, onContentChange }) => 
         />
       ) : (
         <div className="border rounded-md">
-          <MenuBar editor={editor} onImageUploadRequest={handleImageUpload}/>
+          <MenuBar editor={editor} onImageUploadRequest={handleImageUpload} />
           <EditorContent editor={editor} className={styles.editorContent} />
           <input
             type="file"
             ref={fileInputRef}
             accept="image/*"
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
         </div>
       )}

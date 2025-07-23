@@ -1,12 +1,11 @@
 import path from 'path';
-import { NextConfig } from 'next';
 
-const nextConfig: NextConfig = {
-  webpack(config) {
+const nextConfig = {
+  webpack(config: any) {
     config.resolve.alias['@'] = path.resolve(__dirname);
     return config;
   },
-   images: {
+  images: {
     domains: ['res.cloudinary.com'],
   },
 };

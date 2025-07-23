@@ -10,7 +10,6 @@ const config = {
     '/admin/create-post',
     '/admin/login',
     '/api/email',
-    '/blog/*',
   ],
   robotsTxtOptions: {
     policies: [
@@ -21,7 +20,6 @@ const config = {
           '/admin/create-post',
           '/admin/login',
           '/api/email',
-          '/blog/',
         ],
       },
     ],

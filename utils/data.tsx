@@ -33,19 +33,19 @@ export const categories = [
     id: "fitness",
     name: "Fitness",
     image: "/assets/fitness (2).jpg",
-    link: "/blog/posts?category=fitness",
+    link: "/blog/posts?category=category1",
   },
   {
     id: "nutrition",
     name: "Nutrition",
     image: "/assets/nutrition.jpg",
-    link: "/blog/posts?category=nutrition",
+    link: "/blog/posts?category=category2",
   },
   {
     id: "health-wellness",
     name: "Health & Wellness",
     image: "/assets/health-wellness.jpg",
-    link: "/blog/posts?category=health-wellness",
+    link: "/blog/posts?category=category3",
   },
 ];
 
