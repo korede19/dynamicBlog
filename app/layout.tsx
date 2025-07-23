@@ -28,6 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${encodeSans.variable} ${lato.variable}`}>
+      <meta name="monetag" content="7bbdcbb2baafcde4d49d37f6d395afd6"></meta>
       <body className={encodeSans.className}>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-RV6NGH4RBE"
