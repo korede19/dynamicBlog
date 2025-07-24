@@ -33,5 +33,27 @@
   height: auto;
   display: block;
   margin: 1em 0;
+  border-radius: 10px;
 }
 
+
+.previewContent img {
+  max-width: 80%;
+  height: auto;
+  display: block;
+  margin: 1em 0;
+  border-radius: 8px;
+}
+
+.blog-post-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 8px;
+}
+.blog-post-content {
+  width: 100%;
+  max-width: 800px; 
+  margin: 0 auto;
+}
