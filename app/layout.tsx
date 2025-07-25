@@ -57,6 +57,7 @@ export default function RootLayout({
           src="//resources.infolinks.com/js/infolinks_main.js"
           strategy="beforeInteractive"
         />
+        <script type='text/javascript' src='//pl27242710.profitableratecpm.com/66/50/8a/66508a9c4445f297d8c780783f876255.js'></script>
       </body>
     </html>
   );
