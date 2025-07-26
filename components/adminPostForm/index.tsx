@@ -83,11 +83,14 @@ const AdminPostForm = () => {
         ...prev,
         imageUrl: json.secure_url,
       }));
-    } catch (error: any) {
-      alert(`Image upload failed: ${error.message}`);
-    } finally {
-      setUploadingImage(false);
-    }
+    } catch (error: unknown) {
+  if (error instanceof Error) {
+    alert(`Image upload failed: ${error.message}`);
+  } else {
+    alert(`Image upload failed: ${String(error)}`);
+  }
+}
+
   };
 
  
