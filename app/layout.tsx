@@ -28,6 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${encodeSans.variable} ${lato.variable}`}>
+      <head>
+        <meta name="monetag" content="7bbdcbb2baafcde4d49d37f6d395afd6"></meta>
+      </head>
       <meta name="monetag" content="7bbdcbb2baafcde4d49d37f6d395afd6"></meta>
       <body className={encodeSans.className}>
         {/* App UI */}
@@ -45,7 +48,6 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
         <script type='text/javascript' src='//pl27242710.profitableratecpm.com/66/50/8a/66508a9c4445f297d8c780783f876255.js'></script>
-        <script data-cfasync="false" type='text/javascript' src='//pl27242710.profitableratecpm.com/66/50/8a/66508a9c4445f297d8c780783f876255.js'></script>
       </body>
     </html>
   );
