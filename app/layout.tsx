@@ -29,12 +29,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${encodeSans.variable} ${lato.variable}`}>
       <head>
-        <meta name="monetag" content="7bbdcbb2baafcde4d49d37f6d395afd6"></meta>
+        <meta name="monetag" content="7bbdcbb2baafcde4d49d37f6d395afd6" />
       </head>
-      <meta name="monetag" content="7bbdcbb2baafcde4d49d37f6d395afd6"></meta>
       <body className={encodeSans.className}>
-        {/* Google Analytics */}
-         <Script
+        {/* ✅ Google Analytics - Load once using next/script */}
+        <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-RV6NGH4RBE"
           strategy="afterInteractive"
         />
@@ -46,14 +45,18 @@ export default function RootLayout({
             gtag('config', 'G-RV6NGH4RBE');
           `}
         </Script>
+
+        {/* ✅ Infolinks loader script using next/script */}
+        <Script
+          id="infolinks-script"
+          strategy="afterInteractive"
+          data-cfasync="false"
+          src="//pl27242710.profitableratecpm.com/66/50/8a/66508a9c4445f297d8c780783f876255.js"
+        />
+
         {/* App UI */}
         <MegaMenu />
-        <main>
-          {children}
-        </main>
-        {/* Infolinks loader script */}
-        <script data-cfasync="false" type='text/javascript' src='//pl27242710.profitableratecpm.com/66/50/8a/66508a9c4445f297d8c780783f876255.js'></script>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-RV6NGH4RBE"></script>
+        <main>{children}</main>
       </body>
     </html>
   );
