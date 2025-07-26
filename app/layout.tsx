@@ -33,6 +33,7 @@ export default function RootLayout({
       </head>
       <meta name="monetag" content="7bbdcbb2baafcde4d49d37f6d395afd6"></meta>
       <body className={encodeSans.className}>
+        {/* Google Analytics */}
          <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-RV6NGH4RBE"
           strategy="afterInteractive"
