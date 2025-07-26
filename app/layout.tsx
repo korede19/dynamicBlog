@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Encode_Sans_Condensed, Lato } from "next/font/google";
 import "./globals.css";
 import MegaMenu from "@/components/megaMenu";
-import Script from "next/script";
+import Analytics from "@/components/analytics";
+// import Script from "next/script";
 
 const encodeSans = Encode_Sans_Condensed({ 
   subsets: ["latin"],
@@ -35,19 +36,13 @@ export default function RootLayout({
       <body className={encodeSans.className}>
         {/* App UI */}
         <MegaMenu />
+        <Analytics />
         <main>
           {children}
         </main>
-        <Script id="infolinks-config" strategy="beforeInteractive">
-          {`var infolinks_pid = 3438518; var infolinks_wsid = 0;`}
-        </Script>
-
         {/* Infolinks loader script */}
-        <Script
-          src="//resources.infolinks.com/js/infolinks_main.js"
-          strategy="beforeInteractive"
-        />
-        <script type='text/javascript' src='//pl27242710.profitableratecpm.com/66/50/8a/66508a9c4445f297d8c780783f876255.js'></script>
+        <script data-cfasync="false" type='text/javascript' src='//pl27242710.profitableratecpm.com/66/50/8a/66508a9c4445f297d8c780783f876255.js'></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-RV6NGH4RBE"></script>
       </body>
     </html>
   );
