@@ -1,14 +1,21 @@
-import Footer from '@/components/footer'
-import BlogsPage from '@/components/postPage'
-import React from 'react'
+import AllPostsPage from "@/components/allPostPage";
+import Footer from "@/components/footer";
+import React from "react";
+// import { useSearchParams } from "next/navigation"; // Import for Next.js App Router
 
-const AllPost = () => {
+const AllPagePosts = () => {
+  const categoryNames = {
+    category1: "Fitness",
+    category2: "Nutrition",
+    category3: "Health & Wellness",
+  };
+
   return (
     <div>
-      <BlogsPage />
+      <AllPostsPage categoryNames={categoryNames} />
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default AllPost
+export default AllPagePosts;
