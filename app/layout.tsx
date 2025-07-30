@@ -46,14 +46,6 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* ✅ Infolinks loader script using next/script */}
-        <Script
-          id="infolinks-script"
-          strategy="afterInteractive"
-          data-cfasync="false"
-          src="//pl27242710.profitableratecpm.com/66/50/8a/66508a9c4445f297d8c780783f876255.js"
-        />
-
         {/* App UI */}
         <MegaMenu />
         <main>{children}</main>
