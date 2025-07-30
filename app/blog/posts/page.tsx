@@ -10,11 +10,11 @@ const AllPagePosts = () => {
     category3: "Health & Wellness",
   };
 
-  return (
-    <div>
-      <AllPostsPage categoryNames={categoryNames} />
-      <Footer />
-    </div>
+return (
+  <div>
+    <AllPostsPage categoryNames={categoryNames} />
+    <Footer />
+  </div>
   );
 };
 

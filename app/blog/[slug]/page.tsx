@@ -86,6 +86,24 @@ export default function BlogPostPage() {
     <>
       <div className={styles.container}>
         <article className={styles.postContainer}>
+          <script
+            type="text/javascript"
+            dangerouslySetInnerHTML={{
+              __html: `
+          window.atOptions = {
+            'key': '513143e2bd3c79f09c6bc05d8edf528b',
+            'format': 'iframe',
+            'height': 250,
+            'width': 300,
+            'params': {}
+          };
+        `,
+            }}
+          />
+          <script
+            type="text/javascript"
+            src="//www.highperformanceformat.com/513143e2bd3c79f09c6bc05d8edf528b/invoke.js"
+          />
           <h1 className={styles.postTitle}>{post.title}</h1>
           <div className={styles.postMeta}>
             <time dateTime={formattedDate}>{formattedDate}</time>
