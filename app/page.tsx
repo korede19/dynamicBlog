@@ -17,20 +17,24 @@ const LandingPage = () => {
           <PostCard categoryId="category1" categoryName="Fitness" />
           <PostCard categoryId="category2" categoryName="Nutrition" />
         </div>
-        <script
+      </div>
+      <div className={styles.newCol}>
+       <script
           async
           data-cfasync="false"
           src="//pl27261617.profitableratecpm.com/cf13a514ad8f0327c56109e0993b42c4/invoke.js"
         ></script>
         <div id="container-cf13a514ad8f0327c56109e0993b42c4"></div>
-      </div>
+        </div>
       <DiscoverCategories />
-      <script
-        async
-        data-cfasync="false"
-        src="//pl27261617.profitableratecpm.com/cf13a514ad8f0327c56109e0993b42c4/invoke.js"
-      ></script>
-      <div id="container-cf13a514ad8f0327c56109e0993b42c4"></div>
+       <div className={styles.newCol}>
+       <script
+          async
+          data-cfasync="false"
+          src="//pl27261617.profitableratecpm.com/cf13a514ad8f0327c56109e0993b42c4/invoke.js"
+        ></script>
+        <div id="container-cf13a514ad8f0327c56109e0993b42c4"></div>
+        </div>
       <AllPosts
         categoryIds={["category1", "category2", "category3"]}
         categoryNames={{

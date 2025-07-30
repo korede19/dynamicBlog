@@ -18,6 +18,11 @@
   gap: 10px;
 }
 
+.newCol{
+  max-width: 1000px;
+  margin: auto;
+}
+
 @media screen and (max-width: 768px) {
   .heroCol {
     flex-direction: column;
