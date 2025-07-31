@@ -30,6 +30,8 @@ export default function RootLayout({
     <html lang="en" className={`${encodeSans.variable} ${lato.variable}`}>
       <head>
         <meta name="monetag" content="7bbdcbb2baafcde4d49d37f6d395afd6" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6031925946912275"
+     crossOrigin="anonymous"></script>
       </head>
       <body className={encodeSans.className}>
         {/* ✅ Google Analytics - Load once using next/script */}
