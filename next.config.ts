@@ -23,8 +23,6 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true, // Optimize CSS
     scrollRestoration: true, // Better scroll behavior
-    legacyBrowsers: false, // Don't support IE11
-    browsersListForSwc: true, // Use modern browsers list
   },
 
   // Headers for caching and security
