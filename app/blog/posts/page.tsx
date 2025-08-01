@@ -1,7 +1,6 @@
 import AllPostsPage from "@/components/allPostPage";
 import Footer from "@/components/footer";
-import React from "react";
-// import { useSearchParams } from "next/navigation"; // Import for Next.js App Router
+import React, { Suspense } from "react";
 
 const AllPagePosts = () => {
   const categoryNames = {
@@ -12,8 +11,10 @@ const AllPagePosts = () => {
 
 return (
   <div>
+      <Suspense fallback={<div>Loading...</div>}>
     <AllPostsPage categoryNames={categoryNames} />
     <Footer />
+    </Suspense>
   </div>
   );
 };
