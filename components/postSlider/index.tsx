@@ -68,7 +68,13 @@ const CategorySlider = ({ categoryId, categoryName }: CategorySliderProps) => {
       setLoading(true);
       try {
         const fetchedPosts = await fetchPostsByCategory(categoryId);
-        setPosts(fetchedPosts);
+        const sortedPosts = fetchedPosts.sort((a, b) => {
+          const dateA = "toDate" in a.createdAt ? a.createdAt.toDate() : new Date(a.createdAt);
+          const dateB = "toDate" in b.createdAt ? b.createdAt.toDate() : new Date(b.createdAt);
+          return dateB.getTime() - dateA.getTime(); // Descending order (newest first)
+        });
+        
+        setPosts(sortedPosts);
       } catch (error) {
         console.error("Error loading posts:", error);
         setPosts([]);

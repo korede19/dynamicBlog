@@ -13,12 +13,12 @@ const AllPagePosts = () => {
   return (
     <div>
        <div className={styles.newCol}>
-       <script
+       {/* <script
           async
           data-cfasync="false"
           src="//pl27261617.profitableratecpm.com/cf13a514ad8f0327c56109e0993b42c4/invoke.js"
         ></script>
-        <div id="container-cf13a514ad8f0327c56109e0993b42c4"></div>
+        <div id="container-cf13a514ad8f0327c56109e0993b42c4"></div> */}
         </div>
       <AllPostsPage categoryNames={categoryNames} />
       <Footer />

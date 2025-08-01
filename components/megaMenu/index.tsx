@@ -1,228 +1,287 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import styles from "./styles.module.css";
 
-interface HeaderProps {
-  navItems?: Array<{
-    name: string;
-    href: string;
-  }>;
-  logoText?: string;
+import React, { useEffect, useState, useMemo, memo } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import Image from "next/image";
+import Link from "next/link";
+import { fetchPostsByCategory } from "../../lib/firestore";
+import styles from "./styles.module.css";
+import SkeletonLoader from "../skeletonLoader";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+interface FirestoreTimestamp {
+  toDate: () => Date;
 }
 
-const MegaMenu: React.FC<HeaderProps> = ({
-  navItems = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Fitness", href: "/blog/posts?category=category1" },
-    { name: "Nutrition", href: "/blog/posts?category=category2" },
-    { name: "Health & Wellness", href: "/blog/posts?category=category3" },
-  ],
+interface BlogPost {
+  id: string;
+  title: string;
+  imageUrl: string;
+  content: string;
+  categoryId: string;
+  createdAt: Date | FirestoreTimestamp;
+  updatedAt: Date | FirestoreTimestamp;
+  slug?: string;
+}
+
+interface CategorySliderProps {
+  categoryId: string;
+  categoryName: string;
+  priority?: boolean;
+}
+
+// Optimized utility functions
+const stripHtmlTags = (html: string): string => {
+  return html.replace(/<[^>]*>?/gm, "");
+};
+
+const formatDate = (dateValue: Date | FirestoreTimestamp): string => {
+  if (!dateValue) return "No date";
+
+  let date: Date;
+  try {
+    if ("toDate" in dateValue) {
+      date = dateValue.toDate();
+    } else {
+      date = dateValue as Date;
+    }
+
+    if (isNaN(date.getTime())) {
+      return "Invalid date";
+    }
+
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "Invalid date";
+  }
+};
+
+
+const buildOptimizedImageUrl = (imageUrl: string, width: number = 800, height: number = 450): string => {
+  if (!imageUrl) return '';
+  
+  if (imageUrl.includes('res.cloudinary.com')) {
+    const parts = imageUrl.split('/upload/');
+    if (parts.length === 2) {
+      return `${parts[0]}/upload/q_auto,f_auto,w_${width},h_${height},c_fill,g_auto/${parts[1]}`;
+    }
+  }
+  
+  return imageUrl;
+};
+
+const SlideContent = memo(({ 
+  post, 
+  categoryName, 
+  priority = false 
+}: { 
+  post: BlogPost; 
+  categoryName: string; 
+  priority?: boolean;
 }) => {
-  const [scrolled, setScrolled] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const router = useRouter();
+  const optimizedImageUrl = useMemo(() => 
+    buildOptimizedImageUrl(post.imageUrl, 800, 450), [post.imageUrl]
+  );
+
+  const truncatedContent = useMemo(() => 
+    stripHtmlTags(post.content).slice(0, 150), [post.content]
+  );
+
+  return (
+    <div className={styles.slide}>
+      <div className={styles.imageContainer}>
+        <Image
+          src={optimizedImageUrl}
+          alt={post.title}
+          fill
+          style={{ objectFit: 'cover' }}
+          priority={priority}
+          loading={priority ? 'eager' : 'lazy'}
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+          sizes="(max-width: 768px) 100vw, 800px"
+        />
+        <div className={styles.overlay} />
+      </div>
+      
+      <div className={styles.content}>
+        <div className={styles.postMeta}>
+          <span className={styles.category}>{categoryName}</span>
+          <span className={styles.date}>
+            {formatDate(post.createdAt)}
+          </span>
+        </div>
+        
+        <Link
+          href={`/blog/${post.slug}`}
+          className={styles.blogLink}
+          aria-label={`Read article: ${post.title}`}
+        >
+          <h3 className={styles.title}>{post.title}</h3>
+        </Link>
+        
+        <div className={styles.postContent}>
+          <p>{truncatedContent}...</p>
+        </div>
+        
+        <Link
+          href={`/blog/${post.slug}`}
+          className={styles.readMore}
+          aria-label={`Read more about ${post.title}`}
+        >
+          Read More
+        </Link>
+      </div>
+    </div>
+  );
+});
+
+SlideContent.displayName = 'SlideContent';
+
+const CategorySlider = memo(({ 
+  categoryId, 
+  categoryName, 
+  priority = false 
+}: CategorySliderProps) => {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 30;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
+    let isMounted = true;
+
+    const loadPosts = async () => {
+      if (!categoryId) return;
+
+      setLoading(true);
+      setError(false);
+      
+      try {
+        const fetchedPosts = await fetchPostsByCategory(categoryId);
+        
+        if (!isMounted) return;
+
+        // Sort posts by creation date (most recent first)
+        const sortedPosts = fetchedPosts.sort((a, b) => {
+          if (!a.createdAt || !b.createdAt) return 0;
+          
+          const dateA = "toDate" in a.createdAt ? a.createdAt.toDate() : new Date(a.createdAt);
+          const dateB = "toDate" in b.createdAt ? b.createdAt.toDate() : new Date(b.createdAt);
+          return dateB.getTime() - dateA.getTime();
+        });
+        
+        setPosts(sortedPosts);
+      } catch (error) {
+        console.error("Error loading posts:", error);
+        if (isMounted) {
+          setPosts([]);
+          setError(true);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
-    document.addEventListener("scroll", handleScroll, { passive: true });
+    loadPosts();
 
     return () => {
-      document.removeEventListener("scroll", handleScroll);
+      isMounted = false;
     };
-  }, [scrolled]);
+  }, [categoryId]);
 
-  useEffect(() => {
-    // Prevent body scroll when mobile menu is open
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+  // Memoized Swiper configuration
+  const swiperConfig = useMemo(() => ({
+    modules: [Navigation, Pagination, Autoplay],
+    spaceBetween: 30,
+    slidesPerView: 1,
+    navigation: true,
+    pagination: { clickable: true },
+    autoplay: {
+      delay: 4000,
+      disableOnInteraction: false,
+      pauseOnMouseEnter: true,
+    },
+    loop: posts.length > 1,
+    speed: 800,
+    breakpoints: {
+      320: {
+        slidesPerView: 1,
+        spaceBetween: 20,
+      },
+      640: {
+        slidesPerView: 1,
+        spaceBetween: 20,
+      },
+      1024: {
+        slidesPerView: 1,
+        spaceBetween: 30,
+      },
+    },
+  }), [posts.length]);
 
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileMenuOpen]);
-
-  // Most reliable fix - force navigation for all blog categories
-  const handleNavigationReliable = (href: string, e: React.MouseEvent) => {
-    e.preventDefault();
-
-    // Close mobile menu if open
-    setMobileMenuOpen(false);
-
-    if (href.includes("/blog/posts?category=")) {
-      // For blog category links, always force a full page navigation
-      window.location.href = href;
-      return;
-    }
-
-    // For other links, use router.push
-    if (href) {
-      router.push(href, { scroll: true });
-    }
-  };
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Search query:", searchQuery);
-    setSearchOpen(false);
-    setSearchQuery("");
-  };
-
-  return (
-    <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
-      <div className={styles.headerContainer}>
-        <Link href="/">
-          <Image
-            src="/assets/newLogo.png"
-            alt="Logo"
-            width={120}
-            height={120}
-            priority
-            className={styles.logoImage}
-          />
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className={styles.mainNav}>
-          <ul className={styles.navList}>
-            {navItems.map((item) => (
-              <li key={item.name} className={styles.navItem}>
-                <Link
-                  href={item.href}
-                  className={styles.navLink}
-                  onClick={(e) => handleNavigationReliable(item.href, e)}
-                >
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* Search and Login */}
-        <div className={styles.headerActions}>
-          {/* Search */}
-          <div className={styles.searchContainer}>
-            <button
-              className={styles.searchToggle}
-              onClick={() => setSearchOpen(!searchOpen)}
-              aria-label="Toggle search"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </button>
-
-            {searchOpen && (
-              <div className={styles.searchOverlay}>
-                <form
-                  onSubmit={handleSearchSubmit}
-                  className={styles.searchForm}
-                >
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className={styles.searchInput}
-                    autoFocus
-                  />
-                  <button type="submit" className={styles.searchSubmit}>
-                    Search
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.searchClose}
-                    onClick={() => setSearchOpen(false)}
-                  >
-                    ✕
-                  </button>
-                </form>
-              </div>
-            )}
-          </div>
-
-          {/* Login Button */}
-          <Link href="/contact" className={styles.loginButton}>
-            Contact
-          </Link>
-
-          {/* Mobile Menu Button */}
-          <button
-            className={styles.mobileMenuButton}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
+  if (loading) {
+    return (
+      <div className={styles.sliderContainer}>
+        <div className={styles.sliderContain}>
+          <Swiper
+            modules={[Navigation, Pagination]}
+            spaceBetween={30}
+            slidesPerView={1}
+            navigation={false}
+            pagination={{ clickable: true }}
+            loop={false}
           >
-            <div
-              className={`${styles.mobileMenuIcon} ${
-                mobileMenuOpen ? styles.mobileMenuOpen : ""
-              }`}
-            >
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </button>
+            {[1, 2, 3].map((index) => (
+              <SwiperSlide key={index}>
+                <SkeletonLoader type="slide" />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       </div>
+    );
+  }
 
-      {/* Mobile Menu */}
-      <div
-        className={`${styles.mobileMenu} ${
-          mobileMenuOpen ? styles.mobileMenuVisible : ""
-        }`}
-      >
-        <nav>
-          <ul className={styles.mobileNavList}>
-            {navItems.map((item) => (
-              <li key={item.name} className={styles.mobileNavItem}>
-                <Link
-                  href={item.href}
-                  className={styles.mobileNavLink}
-                  onClick={(e) => handleNavigationReliable(item.href, e)}
-                >
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <Link
-          href="/contact"
-          className={styles.mobileLoginButton}
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          Contact
-        </Link>
+  if (error || posts.length === 0) {
+    return (
+      <div className={styles.sliderContainer}>
+        <div className={styles.noPosts}>
+          {error ? "Error loading posts" : "No posts found for this category"}
+        </div>
       </div>
-    </header>
-  );
-};
+    );
+  }
 
-export default MegaMenu;
+  return (
+    <div className={styles.sliderContainer}>
+      <div className={styles.sliderContain}>
+        <Swiper {...swiperConfig}>
+          {posts.map((post, index) => (
+            <SwiperSlide key={post.id}>
+              <SlideContent 
+                post={post} 
+                categoryName={categoryName}
+                priority={priority && index === 0} // Only prioritize first slide
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+    </div>
+  );
+});
+
+CategorySlider.displayName = 'CategorySlider';
+
+export default CategorySlider;
