@@ -213,7 +213,7 @@ const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
               <h3>No posts found</h3>
               {currentCategory ? (
                 <p>
-                  No posts in the "{getCategoryName(currentCategory)}" category yet.{" "}
+                  No posts in the &quot;{getCategoryName(currentCategory)}&quot; category yet.
                   <button 
                     onClick={() => handleCategoryChange(null)}
                     className={styles.viewAllLink}
