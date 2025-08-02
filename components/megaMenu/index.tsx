@@ -44,7 +44,6 @@ const MegaMenu: React.FC<HeaderProps> = ({
   }, [scrolled]);
 
   useEffect(() => {
-    // Prevent body scroll when mobile menu is open
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -56,20 +55,14 @@ const MegaMenu: React.FC<HeaderProps> = ({
     };
   }, [mobileMenuOpen]);
 
-  // Most reliable fix - force navigation for all blog categories
   const handleNavigationReliable = (href: string, e: React.MouseEvent) => {
     e.preventDefault();
-
-    // Close mobile menu if open
     setMobileMenuOpen(false);
 
     if (href.includes("/blog/posts?category=")) {
-      // For blog category links, always force a full page navigation
       window.location.href = href;
       return;
     }
-
-    // For other links, use router.push
     if (href) {
       router.push(href, { scroll: true });
     }

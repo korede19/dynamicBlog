@@ -1,7 +1,8 @@
 import AllPostsPage from "@/components/allPostPage";
 import Footer from "@/components/footer";
 import React from "react";
-import styles from "./styles.module.css";
+export const dynamic = 'force-dynamic';
+
 
 const AllPagePosts = () => {
   const categoryNames = {
