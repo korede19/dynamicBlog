@@ -26,7 +26,7 @@ const config = {
         });
       });
     } catch (error) {
-      console.log('Could not fetch blog posts for sitemap:', error);
+      error
     }
     
     return result;
@@ -95,7 +95,7 @@ async function getBlogPosts() {
       });
     });
     
-    console.log(`Found ${posts.length} published blog posts for sitemap`);
+    console.error(`Found ${posts.length} published blog posts for sitemap`);
     return posts;
   } catch (error) {
     console.error('Error fetching blog posts from Firebase:', error);
