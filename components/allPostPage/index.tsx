@@ -24,6 +24,7 @@ interface BlogPost {
 
 interface AllPostsPageProps {
   categoryNames?: Record<string, string>;
+  initialPosts?: BlogPost[];
 }
 
 const stripHtmlTags = (html: string = "") => {
@@ -58,9 +59,9 @@ const formatDate = (dateValue: Date | FirestoreTimestamp | undefined) => {
   }
 };
 
-const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+const AllPostsPage = ({ categoryNames = {}, initialPosts = [] }: AllPostsPageProps) => {
+  const [posts, setPosts] = useState<BlogPost[]>(initialPosts);
+  const [loading, setLoading] = useState(initialPosts.length === 0);
   const [error, setError] = useState<string | null>(null);
   
   const router = useRouter();
@@ -94,8 +95,15 @@ const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
     return sortedPosts.filter((post) => post?.categoryId === currentCategory);
   }, [sortedPosts, currentCategory]);
 
-  // Fetch posts only once on mount
+  // Fetch posts only if no initial posts provided
   useEffect(() => {
+    // If we have initial posts, don't fetch again
+    if (initialPosts.length > 0) {
+      setPosts(initialPosts);
+      setLoading(false);
+      return;
+    }
+
     let isMounted = true;
 
     const getAllPosts = async () => {
@@ -103,7 +111,7 @@ const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
         setLoading(true);
         setError(null);
         
-        const allPosts = await fetchAllPosts(100); // Increase limit for better search
+        const allPosts = await fetchAllPosts(100);
 
         if (isMounted) {
           setPosts(allPosts || []);
@@ -126,10 +134,12 @@ const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
     return () => {
       isMounted = false;
     };
-  }, []); // Empty dependency array - only run once
+  }, [initialPosts.length]);
 
   // Handle category filter change
   const handleCategoryChange = useCallback((categoryId: string | null) => {
+    if (typeof window === "undefined") return; // Safety check for SSR
+    
     const currentPath = window.location.pathname;
     const newUrl = categoryId 
       ? `${currentPath}?category=${categoryId}`
@@ -151,7 +161,11 @@ const AllPostsPage = ({ categoryNames = {} }: AllPostsPageProps) => {
           <h2>Oops! Something went wrong</h2>
           <p>{error}</p>
           <button 
-            onClick={() => window.location.reload()} 
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                window.location.reload();
+              }
+            }} 
             className={styles.retryButton}
           >
             Try Again

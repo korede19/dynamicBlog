@@ -2,6 +2,8 @@ import AllPostsPage from "@/components/allPostPage";
 import Footer from "@/components/footer";
 import React from "react";
 
+// Add this line to prevent prerendering
+export const dynamic = 'force-dynamic';
 
 const AllPagePosts = () => {
   const categoryNames = {
