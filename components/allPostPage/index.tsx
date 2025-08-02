@@ -184,11 +184,6 @@ const AllPostsPage = ({ categoryNames = {}, initialPosts = [] }: AllPostsPagePro
             : "All Posts"
           }
         </h1>
-        {!loading && filteredPosts.length > 0 && (
-          <p className={styles.postCount}>
-            {filteredPosts.length} post{filteredPosts.length !== 1 ? 's' : ''} found
-          </p>
-        )}
       </div>
 
       {/* Category Filters */}
@@ -270,7 +265,7 @@ const AllPostsPage = ({ categoryNames = {}, initialPosts = [] }: AllPostsPagePro
                     </div>
                     
                     <h2 className={styles.postTitle}>
-                      <Link href={`/blog/${post.slug || post.id}`}>
+                      <Link href={`/blog/${post.slug || post.id}`} className={styles.postLink}>
                         {post.title || "Untitled"}
                       </Link>
                     </h2>

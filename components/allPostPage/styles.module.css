@@ -51,6 +51,15 @@
   gap: 2rem;
 }
 
+.postLink{
+  color: #202121;
+  text-decoration: none;
+}
+
+.postLink:hover{
+    color: #455e4d;
+}
+
 @media (max-width: 1024px) {
   .postsGrid {
     grid-template-columns: repeat(2, 1fr);
