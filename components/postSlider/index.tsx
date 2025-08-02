@@ -68,18 +68,24 @@ const CategorySlider = ({ categoryId, categoryName }: CategorySliderProps) => {
       setLoading(true);
       try {
         const fetchedPosts = await fetchPostsByCategory(categoryId);
-        
+
         // Sort posts by creation date (most recent first) as a fallback
         // in case your Firestore query doesn't handle sorting
         const sortedPosts = fetchedPosts.sort((a, b) => {
           // Handle cases where createdAt might be undefined
           if (!a.createdAt || !b.createdAt) return 0;
-          
-          const dateA = "toDate" in a.createdAt ? a.createdAt.toDate() : new Date(a.createdAt);
-          const dateB = "toDate" in b.createdAt ? b.createdAt.toDate() : new Date(b.createdAt);
+
+          const dateA =
+            "toDate" in a.createdAt
+              ? a.createdAt.toDate()
+              : new Date(a.createdAt);
+          const dateB =
+            "toDate" in b.createdAt
+              ? b.createdAt.toDate()
+              : new Date(b.createdAt);
           return dateB.getTime() - dateA.getTime(); // Descending order (newest first)
         });
-        
+
         setPosts(sortedPosts);
       } catch (error) {
         console.error("Error loading posts:", error);
@@ -130,7 +136,7 @@ const CategorySlider = ({ categoryId, categoryName }: CategorySliderProps) => {
             navigation
             pagination={{ clickable: true }}
             autoplay={{
-              delay: 4000, // Slightly longer delay for reading
+              delay: 4000,
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
             }}
