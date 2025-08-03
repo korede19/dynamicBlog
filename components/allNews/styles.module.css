@@ -18,17 +18,33 @@
     gap: 2rem;
     margin-bottom: 2rem;
   }
+  .twoRowGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
   
   @media (max-width: 1024px) {
     .threeColumnGrid {
       grid-template-columns: repeat(2, 1fr);
     }
+      .twoRowGrid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
   }
   
   @media (max-width: 640px) {
     .threeColumnGrid {
       grid-template-columns: 1fr;
     }
+    .twoRowGrid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
   }
   
   .postCard {

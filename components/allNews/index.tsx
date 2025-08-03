@@ -62,7 +62,7 @@ const AllPosts = ({ categoryIds, categoryNames = {} }: AllPostsProps) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const postsPerPage = 3;
+  const postsPerPage = 6; // Changed from 3 to 6 for 2 rows of 3 columns
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -141,8 +141,7 @@ const AllPosts = ({ categoryIds, categoryNames = {} }: AllPostsProps) => {
   return (
     <div className={styles.allPostsContainer}>
       <h2 className={styles.sectionTitle}> Featured Posts </h2>
-
-      <div className={styles.threeColumnGrid}>
+      <div className={styles.twoRowGrid}>
         {currentPosts.map((post, index) => (
           <div key={post.id || `empty-${index}`} className={styles.postCard}>
             {post.id ? (
