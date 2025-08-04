@@ -1,0 +1,80 @@
+
+> myblog@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.7
+   - Environments: .env
+   - Experiments (use with caution):
+     · optimizeCss
+     · scrollRestoration
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+
+./app/sw.js
+1:14  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:174  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:215  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:287  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:915  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:961  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:1189  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+1:1237  Warning: 'ignore' is defined but never used.  @typescript-eslint/no-unused-vars
+1:1322  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:1378  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:1482  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+1:1583  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:1690  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+1:1830  Warning: 'n' is defined but never used.  @typescript-eslint/no-unused-vars
+1:1833  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:1837  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:2029  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:2204  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:2521  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+1:2536  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:2559  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+1:2745  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+1:2837  Warning: Expected an assignment or function call and instead saw an expression.  @typescript-eslint/no-unused-expressions
+
+./components/allPostPage/index.tsx
+137:6  Warning: React Hook useEffect has a missing dependency: 'initialPosts'. Either include it or remove the dependency array. If 'setPosts' needs the current value of 'initialPosts', you can also switch to useReducer instead of useState and read 'initialPosts' in the reducer.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/14) ...
+   Generating static pages (3/14) 
+   Generating static pages (6/14) 
+   Generating static pages (10/14) 
+ ✓ Generating static pages (14/14)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                             Size     First Load JS
+┌ ○ /                                   3 kB            495 kB
+├ ○ /_not-found                         193 B           484 kB
+├ ○ /about                              610 B           493 kB
+├ ○ /admin/create-post                  1.56 kB         494 kB
+├ ○ /admin/login                        846 B           493 kB
+├ ○ /admin/posts                        1.56 kB         494 kB
+├ ƒ /admin/posts/edit/[id]              2.91 kB         495 kB
+├ ƒ /ads.txt                            128 B           492 kB
+├ ƒ /api/email                          126 B           492 kB
+├ ƒ /blog                               136 B           492 kB
+├ ƒ /blog/[slug]                        1.68 kB         494 kB
+├ ƒ /blog/posts                         136 B           492 kB
+├ ○ /contact                            1.81 kB         494 kB
+├ ○ /privacy-policy                     248 B           492 kB
+└ ○ /terms-of-service                   249 B           492 kB
++ First Load JS shared by all           489 kB
+  ├ chunks/vendors-987a9ae10225f79b.js  482 kB
+  └ other shared chunks (total)         7.12 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> myblog@0.1.0 postbuild
+> next-sitemap
+
