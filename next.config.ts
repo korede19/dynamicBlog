@@ -2,33 +2,38 @@ import path from 'path';
 import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  staticPageGenerationTimeout: 180,
   
-  // Image optimization configuration
   images: {
     domains: ['res.cloudinary.com'],
-    formats: ['image/webp', 'image/avif'], // Modern formats for better compression
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048], // Responsive breakpoints
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384], // Icon/thumbnail sizes
-    minimumCacheTTL: 31536000, // Cache images for 1 year
-    dangerouslyAllowSVG: false, // Security: disable SVG optimization
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048], 
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 31536000, 
+    dangerouslyAllowSVG: false,
     contentDispositionType: 'attachment',
   },
 
-  // Compression and performance
-  compress: true, // Enable gzip compression
-  poweredByHeader: false, // Remove X-Powered-By header for security
-  generateEtags: true, // Enable ETags for better caching
+  compress: true, 
+  poweredByHeader: false,
+  generateEtags: true,
 
-  // Experimental features for better performance
   experimental: {
-    optimizeCss: true, // Optimize CSS
-    scrollRestoration: true, // Better scroll behavior
+    optimizeCss: true, 
+    scrollRestoration: true,
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'], 
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
   },
-
-  // Headers for caching and security
+  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
   async headers() {
     return [
-      // Cache static assets aggressively
       {
         source: '/_next/static/:path*',
         headers: [
@@ -79,7 +84,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Webpack optimizations (renamed to avoid conflict)
   webpack: (config: any, { buildId, dev, isServer, defaultLoaders, webpack }: any) => {
     // Your existing alias
     config.resolve.alias['@'] = path.resolve(__dirname);
@@ -108,9 +112,25 @@ const nextConfig: NextConfig = {
           },
         },
       };
+
+      // Add bundle size limits to catch performance issues early
+      config.performance = {
+        maxAssetSize: 250000, // 250kb limit for individual assets
+        maxEntrypointSize: 400000, // 400kb limit for entry points
+        hints: 'warning',
+      };
     }
 
+    // Add module resolution optimizations
+    config.resolve.extensions = ['.ts', '.tsx', '.js', '.jsx', '.json'];
+    
     return config;
+  },
+
+  swcMinify: true, 
+  async redirects() {
+    return [
+    ];
   },
 };
 

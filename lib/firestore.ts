@@ -30,11 +30,11 @@ interface BlogPost {
   slug?: string;
 }
 
-// Enhanced caching with LRU-like behavior
+// Enhanced caching with SSR-friendly timeout handling
 class PostsCache {
   private cache = new Map<string, { data: BlogPost[], timestamp: number, hits: number }>();
   private readonly maxSize = 100;
-  private readonly cacheDuration = 3 * 60 * 1000; // 3 minutes for better performance
+  private readonly cacheDuration = 5 * 60 * 1000; // Increased to 5 minutes for SSR stability
 
   get(key: string): BlogPost[] | null {
     const item = this.cache.get(key);
@@ -47,7 +47,6 @@ class PostsCache {
   }
 
   set(key: string, data: BlogPost[]) {
-    // LRU eviction if cache is full
     if (this.cache.size >= this.maxSize) {
       const leastUsed = this.findLeastUsedKey();
       if (leastUsed) this.cache.delete(leastUsed);
@@ -90,6 +89,74 @@ class PostsCache {
 
 const cache = new PostsCache();
 
+// SSR-optimized timeout wrapper with safer fallback handling
+const withTimeout = async <T>(
+  promise: Promise<T>, 
+  timeoutMs: number = 15000,
+  fallbackValue?: T
+): Promise<T | null> => {
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error(`Timeout after ${timeoutMs}ms`)), timeoutMs)
+      )
+    ]);
+  } catch (error) {
+    console.warn('Query timeout or error:', error instanceof Error ? error.message : 'Unknown error');
+    return fallbackValue || null;
+  }
+};
+
+// Safer timeout wrapper specifically for QuerySnapshot
+const withQueryTimeout = async (
+  promise: Promise<QuerySnapshot>, 
+  timeoutMs: number = 15000
+): Promise<QuerySnapshot> => {
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error(`Timeout after ${timeoutMs}ms`)), timeoutMs)
+      )
+    ]);
+  } catch (error) {
+    console.warn('Query timeout, returning empty results:', error instanceof Error ? error.message : 'Unknown error');
+    // Return a complete mock QuerySnapshot that TypeScript will accept
+    return {
+      docs: [],
+      size: 0,
+      empty: true,
+      metadata: {
+        hasPendingWrites: false,
+        fromCache: true,
+        isEqual: () => true
+      },
+      query: null as any,
+      forEach: () => {},
+      docChanges: () => []
+    } as unknown as QuerySnapshot;
+  }
+};
+
+// Safer timeout wrapper specifically for DocumentSnapshot
+const withDocTimeout = async (
+  promise: Promise<DocumentSnapshot>, 
+  timeoutMs: number = 15000
+): Promise<DocumentSnapshot | null> => {
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error(`Timeout after ${timeoutMs}ms`)), timeoutMs)
+      )
+    ]);
+  } catch (error) {
+    console.warn('Document fetch timeout:', error instanceof Error ? error.message : 'Unknown error');
+    return null;
+  }
+};
+
 // Optimized document conversion with minimal processing
 const convertDoc = (doc: DocumentSnapshot | QueryDocumentSnapshot): BlogPost | null => {
   if (!doc.exists()) return null;
@@ -121,11 +188,12 @@ const convertQuerySnapshot = (snapshot: QuerySnapshot): BlogPost[] => {
   return posts;
 };
 
-// Core fetch function with connection pooling and retries
+// Core fetch function with SSR-friendly timeout and connection pooling
 const executeQuery = async (
   queryFn: () => Promise<QuerySnapshot>,
   cacheKey: string,
-  maxRetries = 2
+  maxRetries = 1, // Reduced retries for SSR
+  isSSR = false // Flag to identify SSR calls
 ): Promise<BlogPost[]> => {
   // Check cache first
   const cached = cache.get(cacheKey);
@@ -135,7 +203,9 @@ const executeQuery = async (
   
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const snapshot = await queryFn();
+      // Use shorter timeout for SSR to prevent page timeouts
+      const timeoutMs = isSSR ? 10000 : 15000;
+      const snapshot = await withQueryTimeout(queryFn(), timeoutMs);
       const posts = convertQuerySnapshot(snapshot);
       
       // Cache successful results
@@ -145,8 +215,7 @@ const executeQuery = async (
     } catch (error) {
       lastError = error as Error;
       
-      if (attempt < maxRetries) {
-        // Exponential backoff
+      if (attempt < maxRetries && !isSSR) { // Skip retries in SSR for speed
         await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 100));
       }
     }
@@ -156,10 +225,11 @@ const executeQuery = async (
   return [];
 };
 
-// Optimized category posts with composite index support
+// SSR-optimized category posts
 export const fetchPostsByCategory = async (
   categoryId: string, 
-  limitCount = 10
+  limitCount = 10,
+  isSSR = false
 ): Promise<BlogPost[]> => {
   const cacheKey = `cat:${categoryId}:${limitCount}`;
   
@@ -170,23 +240,27 @@ export const fetchPostsByCategory = async (
       orderBy('createdAt', 'desc'),
       limit(limitCount)
     ));
-  }, cacheKey);
+  }, cacheKey, 1, isSSR);
 };
 
-// High-performance all posts with pagination support
+// SSR-optimized all posts with faster fallback
 export const fetchAllPosts = async (
   limitCount = 20,
-  lastVisible?: QueryDocumentSnapshot
+  lastVisible?: QueryDocumentSnapshot,
+  isSSR = false
 ): Promise<{ posts: BlogPost[], lastDoc?: QueryDocumentSnapshot }> => {
   const cacheKey = `all:${limitCount}:${lastVisible?.id || 'start'}`;
   
-  // For pagination, skip cache on subsequent pages
-  if (!lastVisible) {
+  // For SSR, always check cache first and return immediately if available
+  if (isSSR && !lastVisible) {
     const cached = cache.get(cacheKey);
     if (cached) return { posts: cached };
   }
 
   try {
+    // Use shorter timeout for SSR
+    const timeoutMs = isSSR ? 8000 : 15000;
+    
     let q = query(
       collection(db, 'posts'),
       orderBy('createdAt', 'desc'),
@@ -202,7 +276,7 @@ export const fetchAllPosts = async (
       );
     }
 
-    const snapshot = await getDocs(q);
+    const snapshot = await withQueryTimeout(getDocs(q), timeoutMs);
     const posts = convertQuerySnapshot(snapshot);
     
     if (!lastVisible) {
@@ -220,8 +294,11 @@ export const fetchAllPosts = async (
   }
 };
 
-// Optimized recent posts (using updatedAt for better cache efficiency)
-export const fetchRecentPosts = async (limitCount = 10): Promise<BlogPost[]> => {
+// SSR-optimized recent posts
+export const fetchRecentPosts = async (
+  limitCount = 10, 
+  isSSR = false
+): Promise<BlogPost[]> => {
   const cacheKey = `recent:${limitCount}`;
   
   return executeQuery(async () => {
@@ -230,73 +307,26 @@ export const fetchRecentPosts = async (limitCount = 10): Promise<BlogPost[]> => 
       orderBy('updatedAt', 'desc'),
       limit(limitCount)
     ));
-  }, cacheKey);
+  }, cacheKey, 1, isSSR);
 };
 
-// Parallel category fetching with better resource management
-export const fetchPostsByCategories = async (
-  categoryIds: string[], 
-  limitCount = 10
-): Promise<BlogPost[]> => {
-  if (!categoryIds?.length) return [];
-
-  const cacheKey = `cats:${categoryIds.sort().join(',')}:${limitCount}`;
-  const cached = cache.get(cacheKey);
-  if (cached) return cached;
-
-  try {
-    // Limit concurrent requests to avoid overwhelming Firestore
-    const batchSize = 3;
-    const postsPerCategory = Math.ceil(limitCount / categoryIds.length);
-    const allPosts: BlogPost[] = [];
-
-    for (let i = 0; i < categoryIds.length; i += batchSize) {
-      const batch = categoryIds.slice(i, i + batchSize);
-      const batchPromises = batch.map(categoryId => 
-        fetchPostsByCategory(categoryId, postsPerCategory)
-      );
-
-      const batchResults = await Promise.allSettled(batchPromises);
-      
-      batchResults.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          allPosts.push(...result.value);
-        } else {
-          console.warn(`Category ${batch[index]} failed:`, result.reason);
-        }
-      });
-    }
-
-    // Efficient sorting and limiting
-    const sortedPosts = allPosts
-      .sort((a, b) => {
-        const getTime = (date: Date | FirestoreTimestamp) => 
-          'toDate' in date ? date.toDate().getTime() : new Date(date).getTime();
-        return getTime(b.createdAt) - getTime(a.createdAt);
-      })
-      .slice(0, limitCount);
-
-    cache.set(cacheKey, sortedPosts);
-    return sortedPosts;
-
-  } catch (error) {
-    console.error('Error fetching posts by categories:', error);
-    return [];
-  }
-};
-
-// Optimized single post fetch with direct document access
-export const fetchPostBySlug = async (slug: string): Promise<BlogPost | null> => {
+// SSR-optimized single post fetch
+export const fetchPostBySlug = async (
+  slug: string, 
+  isSSR = false
+): Promise<BlogPost | null> => {
   const cacheKey = `post:${slug}`;
   const cached = cache.get(cacheKey);
   if (cached) return cached[0] || null;
 
   try {
+    const timeoutMs = isSSR ? 5000 : 10000; // Very short timeout for single post in SSR
+    
     // Try direct document access first (fastest)
     const docRef = doc(db, 'posts', slug);
-    const docSnap = await getDoc(docRef);
+    const docSnap = await withDocTimeout(getDoc(docRef), timeoutMs);
     
-    if (docSnap.exists()) {
+    if (docSnap && docSnap.exists()) {
       const post = convertDoc(docSnap);
       if (post) {
         cache.set(cacheKey, [post]);
@@ -304,14 +334,20 @@ export const fetchPostBySlug = async (slug: string): Promise<BlogPost | null> =>
       }
     }
 
-    // Fallback to slug query
+    // Skip slug query fallback in SSR to prevent timeout
+    if (isSSR) {
+      return null;
+    }
+
+    // Fallback to slug query (only for client-side)
     const slugQuery = query(
       collection(db, 'posts'),
       where('slug', '==', slug),
       limit(1)
     );
 
-    const snapshot = await getDocs(slugQuery);
+    const snapshot = await withQueryTimeout(getDocs(slugQuery), timeoutMs);
+    
     if (!snapshot.empty) {
       const post = convertDoc(snapshot.docs[0]);
       if (post) {
@@ -328,7 +364,7 @@ export const fetchPostBySlug = async (slug: string): Promise<BlogPost | null> =>
   }
 };
 
-// Lightweight search with better client-side filtering
+// Lightweight search optimized for client-side only
 export const searchPosts = async (
   searchQuery: string, 
   limitCount = 20
@@ -340,8 +376,8 @@ export const searchPosts = async (
   if (cached) return cached;
 
   try {
-    // Use recent posts for search to reduce data transfer
-    const posts = await fetchRecentPosts(50);
+    // Use cached recent posts for search to avoid additional queries
+    const posts = await fetchRecentPosts(30, false); // Never call in SSR
     const query = searchQuery.toLowerCase();
     
     const filtered = posts
@@ -360,15 +396,71 @@ export const searchPosts = async (
   }
 };
 
-// Utility functions
-export const clearCache = (): void => cache.clear();
+// SSR-specific optimized functions
+export const fetchPostsForSSR = async (limitCount = 10): Promise<BlogPost[]> => {
+  // Try cache first
+  const cacheKey = `ssr:recent:${limitCount}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return cached;
+
+  try {
+    // Very aggressive timeout for SSR
+    const snapshot = await withQueryTimeout(
+      getDocs(query(
+        collection(db, 'posts'),
+        orderBy('createdAt', 'desc'),
+        limit(limitCount)
+      )),
+      5000 // 5 second timeout
+    );
+
+    const posts = convertQuerySnapshot(snapshot);
+    cache.set(cacheKey, posts);
+    return posts;
+
+  } catch (error) {
+    console.warn('SSR fetch failed, returning empty array:', error);
+    return [];
+  }
+};
+
+export const fetchPostBySlugForSSR = async (slug: string): Promise<BlogPost | null> => {
+  const cacheKey = `ssr:post:${slug}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return cached[0] || null;
+
+  try {
+    // Ultra-fast SSR timeout
+    const docRef = doc(db, 'posts', slug);
+    const docSnap = await withDocTimeout(getDoc(docRef), 3000); // 3 second timeout for SSR
+    
+    if (docSnap && docSnap.exists()) {
+      const post = convertDoc(docSnap);
+      if (post) {
+        cache.set(cacheKey, [post]);
+        return post;
+      }
+    }
+
+    return null;
+
+  } catch (error) {
+    console.warn('SSR post fetch failed:', error);
+    return null;
+  }
+};
+
+// Connection pooling and warmup
 export const warmupCache = async (): Promise<void> => {
-  // Preload most common queries
+  // Preload most common queries with timeout
   await Promise.allSettled([
-    fetchRecentPosts(10),
-    fetchAllPosts(20)
+    withTimeout(fetchRecentPosts(10, true), 5000),
+    withTimeout(fetchAllPosts(20, undefined, true), 5000)
   ]);
 };
+
+// Utility functions
+export const clearCache = (): void => cache.clear();
 
 // Types export
 export type { BlogPost, FirestoreTimestamp };
