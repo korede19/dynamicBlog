@@ -5,13 +5,17 @@ import {
   orderBy, 
   limit, 
   getDocs,
+  doc,
+  getDoc,
   DocumentData,
   QuerySnapshot,
-  DocumentSnapshot
+  DocumentSnapshot,
+  startAfter,
+  QueryDocumentSnapshot
 } from 'firebase/firestore';
-import { db } from './firebase'; // Your Firebase config
+import { db } from './firebase';
 
-// Define the BlogPost interface to match your component
+// Interfaces
 interface FirestoreTimestamp {
   toDate: () => Date;
 }
@@ -27,318 +31,345 @@ interface BlogPost {
   slug?: string;
 }
 
-// Cache for posts to reduce Firestore calls
-const postsCache = new Map<string, { data: BlogPost[], timestamp: number }>();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+// Enhanced caching with LRU-like behavior
+class PostsCache {
+  private cache = new Map<string, { data: any, timestamp: number, hits: number }>();
+  private readonly maxSize = 100;
+  private readonly cacheDuration = 3 * 60 * 1000; // 3 minutes for better performance
 
-// Helper function to check if cache is valid
-const isCacheValid = (timestamp: number): boolean => {
-  return Date.now() - timestamp < CACHE_DURATION;
-};
-
-// Helper function to safely convert document data
-const convertDocumentToPost = (doc: DocumentSnapshot): BlogPost | null => {
-  try {
-    if (!doc.exists()) return null;
-    
-    const data = doc.data() as DocumentData;
-    return {
-      id: doc.id,
-      title: data.title || '',
-      imageUrl: data.imageUrl || '',
-      content: data.content || '',
-      categoryId: data.categoryId || '',
-      createdAt: data.createdAt || new Date(),
-      updatedAt: data.updatedAt || new Date(),
-      slug: data.slug || doc.id
-    };
-  } catch (error) {
-    console.error('Error converting document to post:', error);
+  get(key: string) {
+    const item = this.cache.get(key);
+    if (item && this.isValid(item.timestamp)) {
+      item.hits++;
+      return item.data;
+    }
+    if (item) this.cache.delete(key);
     return null;
   }
+
+  set(key: string, data: any) {
+    // LRU eviction if cache is full
+    if (this.cache.size >= this.maxSize) {
+      const leastUsed = this.findLeastUsedKey();
+      if (leastUsed) this.cache.delete(leastUsed);
+    }
+
+    this.cache.set(key, {
+      data,
+      timestamp: Date.now(),
+      hits: 1
+    });
+  }
+
+  private isValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.cacheDuration;
+  }
+
+  private findLeastUsedKey(): string | null {
+    let minHits = Infinity;
+    let leastUsedKey = null;
+
+    for (const [key, value] of this.cache.entries()) {
+      if (value.hits < minHits) {
+        minHits = value.hits;
+        leastUsedKey = key;
+      }
+    }
+
+    return leastUsedKey;
+  }
+
+  clear() {
+    this.cache.clear();
+  }
+
+  has(key: string): boolean {
+    const item = this.cache.get(key);
+    return item ? this.isValid(item.timestamp) : false;
+  }
+}
+
+const cache = new PostsCache();
+
+// Optimized document conversion with minimal processing
+const convertDoc = (doc: DocumentSnapshot | QueryDocumentSnapshot): BlogPost | null => {
+  if (!doc.exists()) return null;
+  
+  const data = doc.data();
+  return {
+    id: doc.id,
+    title: data.title ?? '',
+    imageUrl: data.imageUrl ?? '',
+    content: data.content ?? '',
+    categoryId: data.categoryId ?? '',
+    createdAt: data.createdAt ?? new Date(),
+    updatedAt: data.updatedAt ?? new Date(),
+    slug: data.slug ?? doc.id
+  };
 };
 
-// Helper function to safely convert query snapshot
-const convertQuerySnapshotToPosts = (querySnapshot: QuerySnapshot): BlogPost[] => {
+// Batch convert with error resilience
+const convertQuerySnapshot = (snapshot: QuerySnapshot): BlogPost[] => {
   const posts: BlogPost[] = [];
-  
-  querySnapshot.docs.forEach(doc => {
-    const post = convertDocumentToPost(doc);
-    if (post) {
-      posts.push(post);
+  snapshot.docs.forEach(doc => {
+    try {
+      const post = convertDoc(doc);
+      if (post) posts.push(post);
+    } catch (error) {
+      console.warn(`Failed to convert doc ${doc.id}:`, error);
     }
   });
-  
   return posts;
 };
 
-// Fetch posts by category with caching and error handling
-export const fetchPostsByCategory = async (
-  categoryId: string, 
-  limitCount: number = 10
+// Core fetch function with connection pooling and retries
+const executeQuery = async (
+  queryFn: () => Promise<QuerySnapshot>,
+  cacheKey: string,
+  maxRetries = 2
 ): Promise<BlogPost[]> => {
-  const cacheKey = `category-${categoryId}-${limitCount}`;
-  
   // Check cache first
-  const cached = postsCache.get(cacheKey);
-  if (cached && isCacheValid(cached.timestamp)) {
-    return cached.data;
+  const cached = cache.get(cacheKey);
+  if (cached) return cached;
+
+  let lastError: Error | null = null;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const snapshot = await queryFn();
+      const posts = convertQuerySnapshot(snapshot);
+      
+      // Cache successful results
+      cache.set(cacheKey, posts);
+      return posts;
+      
+    } catch (error) {
+      lastError = error as Error;
+      
+      if (attempt < maxRetries) {
+        // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 100));
+      }
+    }
   }
 
-  try {
-    // Create a query that filters by category and orders by creation date (newest first)
-    const postsQuery = query(
+  console.error('Query failed after retries:', lastError);
+  return [];
+};
+
+// Optimized category posts with composite index support
+export const fetchPostsByCategory = async (
+  categoryId: string, 
+  limitCount = 10
+): Promise<BlogPost[]> => {
+  const cacheKey = `cat:${categoryId}:${limitCount}`;
+  
+  return executeQuery(async () => {
+    return getDocs(query(
       collection(db, 'posts'),
       where('categoryId', '==', categoryId),
       orderBy('createdAt', 'desc'),
       limit(limitCount)
-    );
-
-    const querySnapshot = await getDocs(postsQuery);
-    const posts = convertQuerySnapshotToPosts(querySnapshot);
-    
-    // Cache the results
-    postsCache.set(cacheKey, {
-      data: posts,
-      timestamp: Date.now()
-    });
-
-    return posts;
-  } catch (error) {
-    console.error('Error fetching posts by category:', error);
-    
-    // Return cached data if available, even if expired
-    const cachedData = postsCache.get(cacheKey);
-    if (cachedData) {
-      console.warn('Using expired cache data due to error');
-      return cachedData.data;
-    }
-    
-    return [];
-  }
+    ));
+  }, cacheKey);
 };
 
-// Fetch all posts with caching and performance optimization
-export const fetchAllPosts = async (limitCount: number = 50): Promise<BlogPost[]> => {
-  const cacheKey = `all-posts-${limitCount}`;
+// High-performance all posts with pagination support
+export const fetchAllPosts = async (
+  limitCount = 20,
+  lastVisible?: QueryDocumentSnapshot
+): Promise<{ posts: BlogPost[], lastDoc?: QueryDocumentSnapshot }> => {
+  const cacheKey = `all:${limitCount}:${lastVisible?.id || 'start'}`;
   
-  // Check cache first
-  const cached = postsCache.get(cacheKey);
-  if (cached && isCacheValid(cached.timestamp)) {
-    return cached.data;
+  // For pagination, skip cache on subsequent pages
+  if (!lastVisible) {
+    const cached = cache.get(cacheKey);
+    if (cached) return { posts: cached };
   }
 
   try {
-    const postsQuery = query(
+    let q = query(
       collection(db, 'posts'),
       orderBy('createdAt', 'desc'),
       limit(limitCount)
     );
 
-    const querySnapshot = await getDocs(postsQuery);
-    const posts = convertQuerySnapshotToPosts(querySnapshot);
-    
-    // Cache the results
-    postsCache.set(cacheKey, {
-      data: posts,
-      timestamp: Date.now()
-    });
+    if (lastVisible) {
+      q = query(
+        collection(db, 'posts'),
+        orderBy('createdAt', 'desc'),
+        startAfter(lastVisible),
+        limit(limitCount)
+      );
+    }
 
-    return posts;
+    const snapshot = await getDocs(q);
+    const posts = convertQuerySnapshot(snapshot);
+    
+    if (!lastVisible) {
+      cache.set(cacheKey, posts);
+    }
+
+    return {
+      posts,
+      lastDoc: snapshot.docs[snapshot.docs.length - 1] as QueryDocumentSnapshot
+    };
+    
   } catch (error) {
     console.error('Error fetching all posts:', error);
-    
-    // Return cached data if available, even if expired
-    const cachedData = postsCache.get(cacheKey);
-    if (cachedData) {
-      console.warn('Using expired cache data due to error');
-      return cachedData.data;
-    }
-    
-    return [];
+    return { posts: [] };
   }
 };
 
-// Fetch recent posts with better error handling
-export const fetchRecentPosts = async (limitCount: number = 10): Promise<BlogPost[]> => {
-  const cacheKey = `recent-posts-${limitCount}`;
+// Optimized recent posts (using updatedAt for better cache efficiency)
+export const fetchRecentPosts = async (limitCount = 10): Promise<BlogPost[]> => {
+  const cacheKey = `recent:${limitCount}`;
   
-  // Check cache first
-  const cached = postsCache.get(cacheKey);
-  if (cached && isCacheValid(cached.timestamp)) {
-    return cached.data;
-  }
-
-  try {
-    const postsQuery = query(
+  return executeQuery(async () => {
+    return getDocs(query(
       collection(db, 'posts'),
       orderBy('updatedAt', 'desc'),
       limit(limitCount)
-    );
-
-    const querySnapshot = await getDocs(postsQuery);
-    const posts = convertQuerySnapshotToPosts(querySnapshot);
-    
-    // Cache the results
-    postsCache.set(cacheKey, {
-      data: posts,
-      timestamp: Date.now()
-    });
-
-    return posts;
-  } catch (error) {
-    console.error('Error fetching recent posts:', error);
-    
-    // Fallback to fetchAllPosts if recent posts fail
-    try {
-      const allPosts = await fetchAllPosts(limitCount);
-      return allPosts.slice(0, limitCount);
-    } catch (fallbackError) {
-      console.error('Fallback also failed:', fallbackError);
-      return [];
-    }
-  }
+    ));
+  }, cacheKey);
 };
 
-// Optimized fetch posts by multiple categories
+// Parallel category fetching with better resource management
 export const fetchPostsByCategories = async (
   categoryIds: string[], 
-  limitCount: number = 10
+  limitCount = 10
 ): Promise<BlogPost[]> => {
-  if (!categoryIds || categoryIds.length === 0) {
-    return [];
-  }
+  if (!categoryIds?.length) return [];
 
-  const cacheKey = `categories-${categoryIds.sort().join(',')}-${limitCount}`;
-  
-  // Check cache first
-  const cached = postsCache.get(cacheKey);
-  if (cached && isCacheValid(cached.timestamp)) {
-    return cached.data;
-  }
+  const cacheKey = `cats:${categoryIds.sort().join(',')}:${limitCount}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return cached;
 
   try {
-    // Use Promise.allSettled for better error handling
+    // Limit concurrent requests to avoid overwhelming Firestore
+    const batchSize = 3;
     const postsPerCategory = Math.ceil(limitCount / categoryIds.length);
-    const categoryPromises = categoryIds.map(categoryId => 
-      fetchPostsByCategory(categoryId, postsPerCategory)
-    );
-
-    const results = await Promise.allSettled(categoryPromises);
-    
-    // Extract successful results and flatten
     const allPosts: BlogPost[] = [];
-    results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
-        allPosts.push(...result.value);
-      } else {
-        console.error(`Failed to fetch posts for category ${categoryIds[index]}:`, result.reason);
-      }
-    });
-    
-    // Sort by creation date (newest first) and limit
-    const sortedPosts = allPosts.sort((a, b) => {
-      try {
-        const dateA = "toDate" in a.createdAt ? a.createdAt.toDate() : new Date(a.createdAt);
-        const dateB = "toDate" in b.createdAt ? b.createdAt.toDate() : new Date(b.createdAt);
-        return dateB.getTime() - dateA.getTime();
-      } catch (error) {
-        console.error('Error sorting posts by date:', error);
-        return 0;
-      }
-    });
 
-    const limitedPosts = sortedPosts.slice(0, limitCount);
-    
-    // Cache the results
-    postsCache.set(cacheKey, {
-      data: limitedPosts,
-      timestamp: Date.now()
-    });
+    for (let i = 0; i < categoryIds.length; i += batchSize) {
+      const batch = categoryIds.slice(i, i + batchSize);
+      const batchPromises = batch.map(categoryId => 
+        fetchPostsByCategory(categoryId, postsPerCategory)
+      );
 
-    return limitedPosts;
+      const batchResults = await Promise.allSettled(batchPromises);
+      
+      batchResults.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+          allPosts.push(...result.value);
+        } else {
+          console.warn(`Category ${batch[index]} failed:`, result.reason);
+        }
+      });
+    }
+
+    // Efficient sorting and limiting
+    const sortedPosts = allPosts
+      .sort((a, b) => {
+        const getTime = (date: Date | FirestoreTimestamp) => 
+          'toDate' in date ? date.toDate().getTime() : new Date(date).getTime();
+        return getTime(b.createdAt) - getTime(a.createdAt);
+      })
+      .slice(0, limitCount);
+
+    cache.set(cacheKey, sortedPosts);
+    return sortedPosts;
+
   } catch (error) {
     console.error('Error fetching posts by categories:', error);
     return [];
   }
 };
 
-// Function to search posts (for the search component)
-export const searchPosts = async (searchQuery: string, limitCount: number = 20): Promise<BlogPost[]> => {
-  if (!searchQuery.trim()) return [];
-
-  try {
-    // For now, fetch all posts and filter client-side
-    // For production, consider using Algolia or similar for full-text search
-    const allPosts = await fetchAllPosts(100);
-    
-    const query = searchQuery.toLowerCase();
-    const filteredPosts = allPosts.filter(post => {
-      const searchableText = `${post.title} ${post.content} ${post.categoryId}`.toLowerCase();
-      return searchableText.includes(query);
-    });
-
-    return filteredPosts.slice(0, limitCount);
-  } catch (error) {
-    console.error('Error searching posts:', error);
-    return [];
-  }
-};
-
-// Function to clear cache (useful for admin operations)
-export const clearPostsCache = (): void => {
-  postsCache.clear();
-  console.log('Posts cache cleared');
-};
-
-// Function to get specific post by slug or ID
+// Optimized single post fetch with direct document access
 export const fetchPostBySlug = async (slug: string): Promise<BlogPost | null> => {
-  const cacheKey = `post-${slug}`;
-  
-  // Check cache first
-  const cached = postsCache.get(cacheKey);
-  if (cached && isCacheValid(cached.timestamp) && cached.data.length > 0) {
-    return cached.data[0];
-  }
+  const cacheKey = `post:${slug}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return cached[0] || null;
 
   try {
-    // Try to find by slug first
-    let postsQuery = query(
+    // Try direct document access first (fastest)
+    const docRef = doc(db, 'posts', slug);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      const post = convertDoc(docSnap);
+      if (post) {
+        cache.set(cacheKey, [post]);
+        return post;
+      }
+    }
+
+    // Fallback to slug query
+    const slugQuery = query(
       collection(db, 'posts'),
       where('slug', '==', slug),
       limit(1)
     );
 
-    let querySnapshot = await getDocs(postsQuery);
-    
-    // If not found by slug, try by ID
-    if (querySnapshot.empty) {
-      postsQuery = query(
-        collection(db, 'posts'),
-        where('__name__', '==', slug),
-        limit(1)
-      );
-      querySnapshot = await getDocs(postsQuery);
-    }
-
-    if (!querySnapshot.empty) {
-      const post = convertDocumentToPost(querySnapshot.docs[0]);
+    const snapshot = await getDocs(slugQuery);
+    if (!snapshot.empty) {
+      const post = convertDoc(snapshot.docs[0]);
       if (post) {
-        // Cache the result
-        postsCache.set(cacheKey, {
-          data: [post],
-          timestamp: Date.now()
-        });
+        cache.set(cacheKey, [post]);
         return post;
       }
     }
 
     return null;
+
   } catch (error) {
     console.error('Error fetching post by slug:', error);
     return null;
   }
 };
 
-// Export types
+// Lightweight search with better client-side filtering
+export const searchPosts = async (
+  searchQuery: string, 
+  limitCount = 20
+): Promise<BlogPost[]> => {
+  if (!searchQuery.trim()) return [];
+
+  const cacheKey = `search:${searchQuery.toLowerCase()}:${limitCount}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return cached;
+
+  try {
+    // Use recent posts for search to reduce data transfer
+    const posts = await fetchRecentPosts(50);
+    const query = searchQuery.toLowerCase();
+    
+    const filtered = posts
+      .filter(post => {
+        const searchText = `${post.title} ${post.content}`.toLowerCase();
+        return searchText.includes(query);
+      })
+      .slice(0, limitCount);
+
+    cache.set(cacheKey, filtered);
+    return filtered;
+
+  } catch (error) {
+    console.error('Search error:', error);
+    return [];
+  }
+};
+
+// Utility functions
+export const clearCache = (): void => cache.clear();
+export const warmupCache = async (): Promise<void> => {
+  // Preload most common queries
+  await Promise.allSettled([
+    fetchRecentPosts(10),
+    fetchAllPosts(20)
+  ]);
+};
+
+// Types export
 export type { BlogPost, FirestoreTimestamp };

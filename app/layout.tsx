@@ -19,7 +19,11 @@ export const metadata: Metadata = {
     "monetag": "7bbdcbb2baafcde4d49d37f6d395afd6"
   },
   robots: "index, follow",
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({

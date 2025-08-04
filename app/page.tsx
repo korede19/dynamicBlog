@@ -20,8 +20,8 @@ const AdUnit = React.memo(() => (
   <div className={styles.newCol}>
     <Script
       src="//pl27261617.profitableratecpm.com/cf13a514ad8f0327c56109e0993b42c4/invoke.js"
-      strategy="lazyOnload"
-      data-cfasync="false"
+      strategy="afterInteractive"
+      async
     />
     <div id="container-cf13a514ad8f0327c56109e0993b42c4"></div>
   </div>
