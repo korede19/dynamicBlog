@@ -1,0 +1,265 @@
+/* All Posts Page Styles */
+
+.allPostsPageContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 100px auto;
+  padding: 2rem 1rem;
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #202021;
+}
+
+.categoryFilters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+}
+
+.filterButton {
+  padding: 0.5rem 1.25rem;
+  background-color: #3a4a3f42;
+  color: #2a2a2a;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.filterButton:hover {
+  background-color: #577b6342;
+}
+
+.filterButton.active {
+  background-color: #3a4a3f;
+  color: white;
+}
+
+.postsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.postLink{
+  color: #202121;
+  text-decoration: none;
+}
+
+.postLink:hover{
+    color: #455e4d;
+}
+
+@media (max-width: 1024px) {
+  .postsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .postsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .categoryFilters {
+    gap: 0.5rem;
+  }
+
+  .filterButton {
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+.postItem {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.postItem:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+}
+
+.postImageContainer {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.postImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.postItem:hover .postImage {
+  transform: scale(1.05);
+}
+
+.postContent {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.postMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.category {
+  background-color: #3a4a3f42;
+  color: #000000;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.postDate {
+  color: #464646;
+}
+
+.postTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  color: #353535;
+}
+
+.postExcerpt {
+  font-size: 0.9rem;
+  color: #3f3f3f;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.readMore {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  background-color: #3a4a3f;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.readMore:hover {
+  background-color: #455e4d;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem 0;
+  font-size: 1.25rem;
+  color: #718096;
+}
+
+.noPosts {
+  text-align: center;
+  padding: 4rem 0;
+  font-size: 1.25rem;
+  color: #718096;
+  background-color: #f7fafc;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+/* Pagination (if you decide to add it) */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  gap: 0.5rem;
+}
+
+.pageButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  color: #4a5568;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageButton:hover {
+  background-color: #f7fafc;
+}
+
+.pageButton.active {
+  background-color: #3a4a3f;
+  color: white;
+  border-color: #3a4a3f;
+}
+
+.virtualizedContainer {
+  height: 600px;
+  width: 100%;
+}
+
+.virtualRow {
+  display: flex;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+.virtualItem {
+  flex: 1;
+  min-width: 0;
+}
+
+.postImage {
+  transition: transform 0.2s ease;
+  will-change: transform;
+}
+
+.postImage:hover {
+  transform: scale(1.05);
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: reduce) {
+  .postImage {
+    transition: none;
+  }
+  
+  .postImage:hover {
+    transform: none;
+  }
+}
+
+/* Improve performance on mobile */
+@media (max-width: 768px) {
+  .postsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

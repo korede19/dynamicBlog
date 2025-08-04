@@ -1,4 +1,4 @@
-import AllPostsPage from "@/components/allPostPage";
+import AllPostsPage from "@/components/blog/AllPostsPage";
 import Footer from "@/components/footer";
 import React from "react";
 export const dynamic = 'force-dynamic';
