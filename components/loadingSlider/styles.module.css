@@ -1,0 +1,25 @@
+.sliderContain :global(.swiper-button-next),
+.sliderContain :global(.swiper-button-prev) {
+  color: white;
+  background: rgba(0, 0, 0, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sliderContain :global(.swiper-button-next):after,
+.sliderContain :global(.swiper-button-prev):after {
+  font-size: 1.5rem !important;
+}
+
+.sliderContain :global(.swiper-pagination-bullet) {
+  background: white;
+  opacity: 0.7;
+}
+
+.sliderContain :global(.swiper-pagination-bullet-active) {
+  opacity: 1;
+}

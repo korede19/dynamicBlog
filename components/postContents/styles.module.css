@@ -1,0 +1,12 @@
+.postContent {
+  overflow: hidden;
+  font-size: 16px;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+@media screen and (max-width: 768px) {
+  .postContent {
+    font-size: 14px;
+  }
+}

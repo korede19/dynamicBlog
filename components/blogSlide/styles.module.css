@@ -1,0 +1,60 @@
+.slide {
+  height: 600px;
+  width: fit-content;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 2.6rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.readMore {
+  display: inline-block;
+  padding: 0.5rem 2rem;
+  background-color: #eae2d3;
+  color: #222222;
+  text-decoration: none;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  text-align: center;
+  width: fit-content;
+}
+
+.readMore:hover {
+  background-color: #3a4a3f;
+  color: #fff;
+}
+
+.blogLink {
+  text-decoration: none;
+}
+
+@media screen and (max-width: 768px) {
+  .slide {
+    height: 500px;
+    padding: 1rem;
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .readMore {
+    font-size: 0.8rem;
+    padding: 0.5rem 1.5rem;
+  }
+}
