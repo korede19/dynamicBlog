@@ -1,5 +1,5 @@
 export async function GET() {
-  const adsContent = `google.com, ca-pub-6031925946912275, DIRECT, f08c47fec0942fa0`;
+  const adsContent = `google.com, pub-6031925946912275, DIRECT, f08c47fec0942fa0`;
   
   return new Response(adsContent, {
     status: 200,
