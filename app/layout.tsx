@@ -1,24 +1,25 @@
 import type { Metadata } from "next";
-import { Encode_Sans_Condensed, Lato } from "next/font/google";
+import { Encode_Sans_Condensed } from "next/font/google";
 import "./globals.css";
 import MegaMenu from "@/components/megaMenu";
 import Script from "next/script";
 
 const encodeSans = Encode_Sans_Condensed({ 
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["300", "400", "600", "700"], // Only keep weights you actually use
   variable: '--font-encode-sans',
+  display: 'swap', // Prevent layout shift
+  preload: true,
 });
-
-const lato = Lato({
-  subsets: ['latin'],
-  weight: ["100", "300", "400", "700", "900"],
-  variable: '--font-lato',
-});
-
 export const metadata: Metadata = {
   title: "PeakPurzuit",
   description: "PeakPurzuit delivers straight-talking fitness and nutrition advice—no fluff, just results. Get science-backed workout plans, diet tips, and gym hacks to train smarter and eat better. For lifters, athletes, and beginners who want real progress.",
+  // 🚀 MOVED: Meta tags to proper metadata object
+  other: {
+    "monetag": "7bbdcbb2baafcde4d49d37f6d395afd6"
+  },
+  robots: "index, follow",
+  viewport: "width=device-width, initial-scale=1",
 };
 
 export default function RootLayout({
@@ -27,14 +28,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${encodeSans.variable} ${lato.variable}`}>
-      <head>
-        <meta name="monetag" content="7bbdcbb2baafcde4d49d37f6d395afd6" />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6031925946912275"
-     crossOrigin="anonymous"></script>
-      </head>
+    <html lang="en" className={encodeSans.variable}>
       <body className={encodeSans.className}>
-        {/* ✅ Google Analytics - Load once using next/script */}
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6031925946912275"
+          strategy="lazyOnload"
+          crossOrigin="anonymous"
+        />
+
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-RV6NGH4RBE"
           strategy="afterInteractive"
