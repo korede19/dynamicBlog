@@ -11,106 +11,76 @@ const config = {
     '/admin/login',
     '/api/email',
     '/api/ads.txt',
+    '/api/blog-posts', // Exclude the API endpoint itself
   ],
   additionalPaths: async (config) => {
-    console.log('🚀 additionalPaths function called!');
-    console.log('🔍 Fetching blog posts from Firebase...');
-    
-    // Quick test - add a test URL to confirm this function works
-    const testResult = [{
-      loc: '/blog/test-function-working',
-      changefreq: 'weekly',
-      priority: 0.8,
-      lastmod: new Date().toISOString(),
-    }];
+    console.log('🚀 Fetching blog posts directly with client Firebase...');
     
     try {
-      console.log('🔧 Environment check:');
-      console.log('- Has FIREBASE_ADMIN_PRIVATE_KEY:', !!process.env.FIREBASE_ADMIN_PRIVATE_KEY);
-      console.log('- Has FIREBASE_ADMIN_CLIENT_EMAIL:', !!process.env.FIREBASE_ADMIN_CLIENT_EMAIL);
-      console.log('- Private key starts with:', process.env.FIREBASE_ADMIN_PRIVATE_KEY?.substring(0, 30) + '...');
-      console.log('- Client email:', process.env.FIREBASE_ADMIN_CLIENT_EMAIL);
+      // Direct Firebase connection using your existing client setup
+      const { initializeApp } = require('firebase/app');
+      const { getFirestore, collection, getDocs } = require('firebase/firestore');
       
-      const admin = require('firebase-admin');
+      const firebaseConfig = {
+        apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+        authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+        appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+      };
       
-      // Initialize Firebase Admin
-      if (!admin.apps.length) {
-        if (!process.env.FIREBASE_ADMIN_PRIVATE_KEY || !process.env.FIREBASE_ADMIN_CLIENT_EMAIL) {
-          console.log('❌ Missing Firebase Admin credentials');
-          return [];
-        }
-        
-        admin.initializeApp({
-          credential: admin.credential.cert({
-            projectId: 'blogwebsite-b9161',
-            privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n'),
-            clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-          }),
-        });
-        console.log('✅ Firebase Admin initialized');
+      console.log('🔥 Initializing Firebase client...');
+      const app = initializeApp(firebaseConfig, 'sitemap-app');
+      const db = getFirestore(app);
+      
+      console.log('📂 Fetching posts collection...');
+      const postsRef = collection(db, 'posts');
+      const snapshot = await getDocs(postsRef);
+      
+      if (snapshot.empty) {
+        console.log('❌ No posts found in collection');
+        return [];
       }
       
-      const db = admin.firestore();
+      console.log(`📄 Found ${snapshot.size} documents in posts collection`);
       
-      // Try your specific collection first
-      const collectionName = 'posts';
+      const blogPosts = [];
       
-      try {
-        console.log(`🔍 Fetching from '${collectionName}' collection...`);
+      snapshot.forEach((doc) => {
+        const data = doc.data();
         
-        // Get all documents from posts collection
-        const snapshot = await db.collection(collectionName).get();
-        
-        if (!snapshot.empty) {
-          console.log(`✅ Found '${collectionName}' collection with ${snapshot.size} documents`);
-          
-          const blogPosts = [];
-          
-          snapshot.forEach((doc) => {
-            const data = doc.data();
-            
-            // Log the first document structure for debugging
-            if (blogPosts.length === 0) {
-              console.log(`📄 Sample document fields:`, Object.keys(data));
-            }
-            
-            // Check if document has the required fields
-            if (data.title && data.slug) {
-              blogPosts.push({
-                loc: `/blog/${data.slug}`,
-                changefreq: 'weekly',
-                priority: 0.8,
-                lastmod: data.updatedAt?.toDate?.()?.toISOString() || 
-                         data.createdAt?.toDate?.()?.toISOString() || 
-                         new Date().toISOString(),
-              });
-              
-              if (blogPosts.length <= 5) { // Log first 5 posts
-                console.log(`📝 Added blog post: /blog/${data.slug}`);
-              }
-            } else {
-              console.log(`⚠️ Document ${doc.id} missing title or slug`);
-            }
+        // Log first few documents for debugging
+        if (blogPosts.length < 3) {
+          console.log(`📝 Document ${doc.id}:`, {
+            title: data.title,
+            slug: data.slug,
+            hasTitle: !!data.title,
+            hasSlug: !!data.slug
           });
-          
-          console.log(`🎉 Successfully added ${blogPosts.length} blog posts to sitemap`);
-          // Combine test result with real blog posts
-          return [...testResult, ...blogPosts];
-          
-        } else {
-          console.log(`❌ Collection '${collectionName}' is empty`);
-          return testResult; // Return test result even if empty
         }
         
-      } catch (collectionError) {
-        console.error(`💥 Error accessing '${collectionName}' collection:`, collectionError.message);
-        console.error('Full error:', collectionError);
-        return testResult; // Return test result even on error
-      }
+        if (data.title && data.slug) {
+          blogPosts.push({
+            loc: `/blog/${data.slug}`,
+            changefreq: 'weekly',
+            priority: 0.8,
+            lastmod: data.updatedAt?.toDate?.()?.toISOString() || 
+                     data.createdAt?.toDate?.()?.toISOString() || 
+                     new Date().toISOString(),
+          });
+        } else {
+          console.log(`⚠️ Skipping document ${doc.id} - missing title or slug`);
+        }
+      });
+      
+      console.log(`✅ Successfully processed ${blogPosts.length} blog posts for sitemap`);
+      return blogPosts;
       
     } catch (error) {
-      console.error('💥 Firebase error:', error.message);
-      return testResult; // Return test result even on Firebase error
+      console.error('💥 Firebase client error:', error.message);
+      console.error('Full error:', error);
+      return [];
     }
   },
   robotsTxtOptions: {
