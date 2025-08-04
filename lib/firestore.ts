@@ -7,7 +7,6 @@ import {
   getDocs,
   doc,
   getDoc,
-  DocumentData,
   QuerySnapshot,
   DocumentSnapshot,
   startAfter,
