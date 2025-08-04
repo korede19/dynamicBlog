@@ -10,7 +10,8 @@ import {
   QuerySnapshot,
   DocumentSnapshot,
   startAfter,
-  QueryDocumentSnapshot
+  QueryDocumentSnapshot,
+  Query
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -30,11 +31,22 @@ interface BlogPost {
   slug?: string;
 }
 
+interface CacheItem {
+  data: BlogPost[];
+  timestamp: number;
+  hits: number;
+}
+
+interface FetchResult {
+  posts: BlogPost[];
+  lastDoc?: QueryDocumentSnapshot;
+}
+
 // Enhanced caching with SSR-friendly timeout handling
 class PostsCache {
-  private cache = new Map<string, { data: BlogPost[], timestamp: number, hits: number }>();
+  private cache = new Map<string, CacheItem>();
   private readonly maxSize = 100;
-  private readonly cacheDuration = 5 * 60 * 1000; // Increased to 5 minutes for SSR stability
+  private readonly cacheDuration = 5 * 60 * 1000; // 5 minutes for SSR stability
 
   get(key: string): BlogPost[] | null {
     const item = this.cache.get(key);
@@ -46,7 +58,7 @@ class PostsCache {
     return null;
   }
 
-  set(key: string, data: BlogPost[]) {
+  set(key: string, data: BlogPost[]): void {
     if (this.cache.size >= this.maxSize) {
       const leastUsed = this.findLeastUsedKey();
       if (leastUsed) this.cache.delete(leastUsed);
@@ -65,7 +77,7 @@ class PostsCache {
 
   private findLeastUsedKey(): string | null {
     let minHits = Infinity;
-    let leastUsedKey = null;
+    let leastUsedKey: string | null = null;
 
     for (const [key, value] of this.cache.entries()) {
       if (value.hits < minHits) {
@@ -77,7 +89,7 @@ class PostsCache {
     return leastUsedKey;
   }
 
-  clear() {
+  clear(): void {
     this.cache.clear();
   }
 
@@ -88,6 +100,25 @@ class PostsCache {
 }
 
 const cache = new PostsCache();
+
+// Create a proper mock QuerySnapshot
+const createEmptyQuerySnapshot = (): QuerySnapshot => {
+  const mockQuery = {} as Query;
+  
+  return {
+    docs: [],
+    size: 0,
+    empty: true,
+    metadata: {
+      hasPendingWrites: false,
+      fromCache: true,
+      isEqual: () => true
+    },
+    query: mockQuery,
+    forEach: () => {},
+    docChanges: () => []
+  } as QuerySnapshot;
+};
 
 // SSR-optimized timeout wrapper with safer fallback handling
 const withTimeout = async <T>(
@@ -104,7 +135,7 @@ const withTimeout = async <T>(
     ]);
   } catch (error) {
     console.warn('Query timeout or error:', error instanceof Error ? error.message : 'Unknown error');
-    return fallbackValue || null;
+    return fallbackValue ?? null;
   }
 };
 
@@ -122,20 +153,7 @@ const withQueryTimeout = async (
     ]);
   } catch (error) {
     console.warn('Query timeout, returning empty results:', error instanceof Error ? error.message : 'Unknown error');
-    // Return a complete mock QuerySnapshot that TypeScript will accept
-    return {
-      docs: [],
-      size: 0,
-      empty: true,
-      metadata: {
-        hasPendingWrites: false,
-        fromCache: true,
-        isEqual: () => true
-      },
-      query: null as any,
-      forEach: () => {},
-      docChanges: () => []
-    } as unknown as QuerySnapshot;
+    return createEmptyQuerySnapshot();
   }
 };
 
@@ -162,6 +180,8 @@ const convertDoc = (doc: DocumentSnapshot | QueryDocumentSnapshot): BlogPost | n
   if (!doc.exists()) return null;
   
   const data = doc.data();
+  if (!data) return null;
+
   return {
     id: doc.id,
     title: data.title ?? '',
@@ -177,6 +197,7 @@ const convertDoc = (doc: DocumentSnapshot | QueryDocumentSnapshot): BlogPost | n
 // Batch convert with error resilience
 const convertQuerySnapshot = (snapshot: QuerySnapshot): BlogPost[] => {
   const posts: BlogPost[] = [];
+  
   snapshot.docs.forEach(doc => {
     try {
       const post = convertDoc(doc);
@@ -185,6 +206,7 @@ const convertQuerySnapshot = (snapshot: QuerySnapshot): BlogPost[] => {
       console.warn(`Failed to convert doc ${doc.id}:`, error);
     }
   });
+  
   return posts;
 };
 
@@ -192,8 +214,8 @@ const convertQuerySnapshot = (snapshot: QuerySnapshot): BlogPost[] => {
 const executeQuery = async (
   queryFn: () => Promise<QuerySnapshot>,
   cacheKey: string,
-  maxRetries = 1, // Reduced retries for SSR
-  isSSR = false // Flag to identify SSR calls
+  maxRetries = 1,
+  isSSR = false
 ): Promise<BlogPost[]> => {
   // Check cache first
   const cached = cache.get(cacheKey);
@@ -215,7 +237,8 @@ const executeQuery = async (
     } catch (error) {
       lastError = error as Error;
       
-      if (attempt < maxRetries && !isSSR) { // Skip retries in SSR for speed
+      // Skip retries in SSR for speed
+      if (attempt < maxRetries && !isSSR) {
         await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 100));
       }
     }
@@ -248,7 +271,7 @@ export const fetchAllPosts = async (
   limitCount = 20,
   lastVisible?: QueryDocumentSnapshot,
   isSSR = false
-): Promise<{ posts: BlogPost[], lastDoc?: QueryDocumentSnapshot }> => {
+): Promise<FetchResult> => {
   const cacheKey = `all:${limitCount}:${lastVisible?.id || 'start'}`;
   
   // For SSR, always check cache first and return immediately if available
@@ -283,10 +306,11 @@ export const fetchAllPosts = async (
       cache.set(cacheKey, posts);
     }
 
-    return {
-      posts,
-      lastDoc: snapshot.docs[snapshot.docs.length - 1] as QueryDocumentSnapshot
-    };
+    const lastDoc = snapshot.docs.length > 0 
+      ? snapshot.docs[snapshot.docs.length - 1] as QueryDocumentSnapshot
+      : undefined;
+
+    return { posts, lastDoc };
     
   } catch (error) {
     console.error('Error fetching all posts:', error);
@@ -317,16 +341,17 @@ export const fetchPostBySlug = async (
 ): Promise<BlogPost | null> => {
   const cacheKey = `post:${slug}`;
   const cached = cache.get(cacheKey);
-  if (cached) return cached[0] || null;
+  if (cached && cached.length > 0) return cached[0];
 
   try {
-    const timeoutMs = isSSR ? 5000 : 10000; // Very short timeout for single post in SSR
+    // Very short timeout for single post in SSR
+    const timeoutMs = isSSR ? 5000 : 10000;
     
     // Try direct document access first (fastest)
     const docRef = doc(db, 'posts', slug);
     const docSnap = await withDocTimeout(getDoc(docRef), timeoutMs);
     
-    if (docSnap && docSnap.exists()) {
+    if (docSnap?.exists()) {
       const post = convertDoc(docSnap);
       if (post) {
         cache.set(cacheKey, [post]);
@@ -369,16 +394,17 @@ export const searchPosts = async (
   searchQuery: string, 
   limitCount = 20
 ): Promise<BlogPost[]> => {
-  if (!searchQuery.trim()) return [];
+  const trimmedQuery = searchQuery.trim();
+  if (!trimmedQuery) return [];
 
-  const cacheKey = `search:${searchQuery.toLowerCase()}:${limitCount}`;
+  const cacheKey = `search:${trimmedQuery.toLowerCase()}:${limitCount}`;
   const cached = cache.get(cacheKey);
   if (cached) return cached;
 
   try {
     // Use cached recent posts for search to avoid additional queries
     const posts = await fetchRecentPosts(30, false); // Never call in SSR
-    const query = searchQuery.toLowerCase();
+    const query = trimmedQuery.toLowerCase();
     
     const filtered = posts
       .filter(post => {
@@ -427,14 +453,14 @@ export const fetchPostsForSSR = async (limitCount = 10): Promise<BlogPost[]> => 
 export const fetchPostBySlugForSSR = async (slug: string): Promise<BlogPost | null> => {
   const cacheKey = `ssr:post:${slug}`;
   const cached = cache.get(cacheKey);
-  if (cached) return cached[0] || null;
+  if (cached && cached.length > 0) return cached[0];
 
   try {
     // Ultra-fast SSR timeout
     const docRef = doc(db, 'posts', slug);
     const docSnap = await withDocTimeout(getDoc(docRef), 3000); // 3 second timeout for SSR
     
-    if (docSnap && docSnap.exists()) {
+    if (docSnap?.exists()) {
       const post = convertDoc(docSnap);
       if (post) {
         cache.set(cacheKey, [post]);
@@ -462,5 +488,17 @@ export const warmupCache = async (): Promise<void> => {
 // Utility functions
 export const clearCache = (): void => cache.clear();
 
+// Export cache stats for debugging
+export const getCacheStats = () => ({
+  size: cache['cache'].size,
+  maxSize: cache['maxSize'],
+  entries: Array.from(cache['cache'].entries()).map(([key, value]) => ({
+    key,
+    hits: value.hits,
+    age: Date.now() - value.timestamp,
+    dataSize: value.data.length
+  }))
+});
+
 // Types export
-export type { BlogPost, FirestoreTimestamp };
+export type { BlogPost, FirestoreTimestamp, FetchResult };
