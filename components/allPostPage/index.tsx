@@ -111,10 +111,10 @@ const AllPostsPage = ({ categoryNames = {}, initialPosts = [] }: AllPostsPagePro
         setLoading(true);
         setError(null);
         
-        const allPosts = await fetchAllPosts(100);
+        const response = await fetchAllPosts(100);
 
         if (isMounted) {
-          setPosts(allPosts || []);
+          setPosts(response.posts || []);
         }
       } catch (error) {
         console.error("Error fetching all posts:", error);
