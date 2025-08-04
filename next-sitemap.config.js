@@ -13,7 +13,16 @@ const config = {
     '/api/ads.txt',
   ],
   additionalPaths: async (config) => {
+    console.log('🚀 additionalPaths function called!');
     console.log('🔍 Fetching blog posts from Firebase...');
+    
+    // Quick test - add a test URL to confirm this function works
+    const testResult = [{
+      loc: '/blog/test-function-working',
+      changefreq: 'weekly',
+      priority: 0.8,
+      lastmod: new Date().toISOString(),
+    }];
     
     try {
       const admin = require('firebase-admin');
@@ -79,22 +88,23 @@ const config = {
           });
           
           console.log(`🎉 Successfully added ${blogPosts.length} blog posts to sitemap`);
-          return blogPosts;
+          // Combine test result with real blog posts
+          return [...testResult, ...blogPosts];
           
         } else {
           console.log(`❌ Collection '${collectionName}' is empty`);
-          return [];
+          return testResult; // Return test result even if empty
         }
         
       } catch (collectionError) {
         console.error(`💥 Error accessing '${collectionName}' collection:`, collectionError.message);
         console.error('Full error:', collectionError);
-        return [];
+        return testResult; // Return test result even on error
       }
       
     } catch (error) {
       console.error('💥 Firebase error:', error.message);
-      return [];
+      return testResult; // Return test result even on Firebase error
     }
   },
   robotsTxtOptions: {
