@@ -54,15 +54,16 @@ const BlogsPage = () => {
     const getAllPosts = async () => {
       try {
         setLoading(true);
-        const allPosts = await fetchAllPosts();
-        if (Array.isArray(allPosts) && allPosts.length > 0) {
-          allPosts.sort((a, b) => {
+        const response = await fetchAllPosts();
+        const postsData = response.posts;
+        if (Array.isArray(postsData) && postsData.length > 0) {
+          postsData.sort((a, b) => {
             const dateA = "toDate" in a.createdAt ? a.createdAt.toDate() : a.createdAt;
             const dateB = "toDate" in b.createdAt ? b.createdAt.toDate() : b.createdAt;
             return new Date(dateB).getTime() - new Date(dateA).getTime();
           });
         }
-        setPosts(allPosts || []);
+        setPosts(postsData || []);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching posts:", error);
