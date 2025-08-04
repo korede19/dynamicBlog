@@ -25,6 +25,12 @@ const config = {
     }];
     
     try {
+      console.log('🔧 Environment check:');
+      console.log('- Has FIREBASE_ADMIN_PRIVATE_KEY:', !!process.env.FIREBASE_ADMIN_PRIVATE_KEY);
+      console.log('- Has FIREBASE_ADMIN_CLIENT_EMAIL:', !!process.env.FIREBASE_ADMIN_CLIENT_EMAIL);
+      console.log('- Private key starts with:', process.env.FIREBASE_ADMIN_PRIVATE_KEY?.substring(0, 30) + '...');
+      console.log('- Client email:', process.env.FIREBASE_ADMIN_CLIENT_EMAIL);
+      
       const admin = require('firebase-admin');
       
       // Initialize Firebase Admin
