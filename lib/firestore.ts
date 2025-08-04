@@ -32,11 +32,11 @@ interface BlogPost {
 
 // Enhanced caching with LRU-like behavior
 class PostsCache {
-  private cache = new Map<string, { data: any, timestamp: number, hits: number }>();
+  private cache = new Map<string, { data: BlogPost[], timestamp: number, hits: number }>();
   private readonly maxSize = 100;
   private readonly cacheDuration = 3 * 60 * 1000; // 3 minutes for better performance
 
-  get(key: string) {
+  get(key: string): BlogPost[] | null {
     const item = this.cache.get(key);
     if (item && this.isValid(item.timestamp)) {
       item.hits++;
@@ -46,7 +46,7 @@ class PostsCache {
     return null;
   }
 
-  set(key: string, data: any) {
+  set(key: string, data: BlogPost[]) {
     // LRU eviction if cache is full
     if (this.cache.size >= this.maxSize) {
       const leastUsed = this.findLeastUsedKey();
